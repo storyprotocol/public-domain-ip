@@ -1,0 +1,5 @@
+requests
+bs4==0.0.1
+rdflib==7.0.0
+sqlalchemy==2.0.23
+click==8.1.7

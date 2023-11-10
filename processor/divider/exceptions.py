@@ -1,0 +1,2 @@
+class CsvFormatError(Exception):
+    pass

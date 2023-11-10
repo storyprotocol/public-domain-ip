@@ -1,0 +1,1 @@
+SPACE_STR = '@#$SPACE*(&'
