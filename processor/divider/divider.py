@@ -3,7 +3,7 @@ import re
 
 from divider.base import BaseDivider
 from divider.chapter import GenericChapter
-from divider.utils import clean_content, list_to_content
+from divider.utils import clean_content, list_to_content, parse_anchor_params
 
 
 class GenericDivider(BaseDivider):
@@ -128,5 +128,5 @@ def divider_factory(book_type, url, params):
     if book_type == '1':
         return GenericDivider(url=url)
     elif book_type == '2':
-        return AnchorDivider(url=url, anchor_list=[i.strip() for i in params.split(',')])
+        return AnchorDivider(url=url, anchor_list=parse_anchor_params(params))
     return ContentDivider()

@@ -1,5 +1,7 @@
 import json
 
+from loguru import logger
+
 from divider.csv_reader import CsvReader
 from divider.divider import divider_factory
 from divider.rdf import RdfParser
@@ -12,10 +14,10 @@ def divide_book(csv_path):
 
     for item in data:
         if Book.first_by_url(item['url']):
-            print(f"{item['title']} already processed, skip it")
+            logger.info(f"{item['title']} already processed, skip it")
             continue
 
-        print(f"processing title: {item['title']}")
+        logger.info(f"processing title: {item['title']}")
         divider = divider_factory(item['type'], item['url'], item['params'])
         chapters = [chapter for chapter in divider.divide()]
         rdf_url = item['url'].replace('-images.html.utf8', '.rdf').replace('-images.html', '.rdf')
@@ -53,4 +55,4 @@ def divide_book(csv_path):
                 session.bulk_save_objects(chapter_objs)
             session.commit()
 
-        print(f"processing title: {item['title']} done")
+        logger.info(f"processing title: {item['title']} done")

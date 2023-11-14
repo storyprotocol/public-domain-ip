@@ -1,3 +1,5 @@
+import uuid
+
 from sqlalchemy import Column, Integer, String, Text, ForeignKey
 from sqlalchemy.orm import subqueryload
 
@@ -7,7 +9,7 @@ from models import Base, Session
 class Book(Base):
     __tablename__ = 'book'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String(256))
     publisher = Column(String(256))
     authors = Column(String(256))
@@ -57,8 +59,8 @@ class Book(Base):
 class Chapter(Base):
     __tablename__ = 'chapter'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    book_id = Column(Integer, ForeignKey('book.id'), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    book_id = Column(String(36), ForeignKey('book.id'), nullable=False)
     chapter_num = Column(Integer)
     chapter_name = Column(String(256))
     content = Column(Text)

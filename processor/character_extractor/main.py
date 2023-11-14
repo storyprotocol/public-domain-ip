@@ -1,6 +1,7 @@
-import time
 import json
 from collections import defaultdict
+
+from loguru import logger
 
 from character_extractor.parse_by_spacy import SpacyParser
 from models import Session
@@ -18,15 +19,14 @@ def parse_book():
     for series_name, books in series_map.items():
         has_processed = bool(Series.first_by_title(series_name))
         if has_processed:
-            print(f'{series_name} already processed, skip it')
+            logger.info(f'{series_name} already processed, skip it')
             continue
 
-        start_time = time.time()
-        print(f'parsing: {series_name}')
+        logger.info(f'parsing: {series_name}')
         chapters = Chapter.get_chapters_by_book_ids([book.id for book in books])
         parser = SpacyParser(chapters)
         result = parser.parse()
-        print(f'done: {series_name}, using {time.time() - start_time} seconds')
+        logger.info(f'parse {series_name} done')
 
         tags = []
         for book in books:

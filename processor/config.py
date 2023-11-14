@@ -1,3 +1,6 @@
 import os
 
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///local.db')
+from openai import AsyncOpenAI
+
+DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///local.db')
+OPENAI_CLIENT = AsyncOpenAI(api_key=os.environ.get("OPENAI_API_KEY", ''))
