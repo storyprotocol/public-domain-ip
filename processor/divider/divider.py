@@ -1,3 +1,4 @@
+import json
 import re
 
 from divider.base import BaseDivider
@@ -43,7 +44,7 @@ class AnchorDivider(BaseDivider):
                  *args,
                  **kwargs):
         super().__init__(*args, **kwargs)
-        assert len(anchor_list) > 1
+        assert len(anchor_list) > 0
         self.anchor_list = anchor_list
 
     def get_chapter_title(self, anchor_id):
@@ -123,9 +124,9 @@ class ContentDivider(BaseDivider):
                 break
 
 
-def divider_factory(book_type):
+def divider_factory(book_type, url, params):
     if book_type == '1':
-        return GenericDivider
+        return GenericDivider(url=url)
     elif book_type == '2':
-        return AnchorDivider
-    return ContentDivider
+        return AnchorDivider(url=url, anchor_list=[i.strip() for i in params.split(',')])
+    return ContentDivider()

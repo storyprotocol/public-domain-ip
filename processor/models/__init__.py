@@ -6,6 +6,7 @@ from config import DATABASE_URL
 Base = declarative_base()
 
 engine = create_engine(DATABASE_URL,
+                       echo=True,
                        pool_size=5,
                        max_overflow=0)
 

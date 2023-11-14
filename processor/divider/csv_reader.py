@@ -9,7 +9,7 @@ class CsvReader:
 
     @staticmethod
     def is_header_valid(header_row):
-        return ['title', 'author', 'url', 'type', 'series'] == header_row
+        return ['title', 'author', 'url', 'type', 'params', 'series'] == header_row
 
     def read(self):
         ret = []
@@ -24,6 +24,7 @@ class CsvReader:
                     'author': row[1],
                     'url': row[2],
                     'type': row[3],
-                    'series': row[4],
+                    'params': row[4],
+                    'series': row[5],
                 })
         return ret

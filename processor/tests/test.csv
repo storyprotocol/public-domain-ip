@@ -1,5 +1,7 @@
-title,author,url,type,series
-Alice's Adventures in Wonderland,Lewis Carroll,https://www.gutenberg.org/cache/epub/11/pg11-images.html,1,story1
-Don Quixote,Miguel de Cervantes,https://www.gutenberg.org/cache/epub/996/pg996-images.html,1,story2
-Frankenstein,Mary Shelley,https://www.gutenberg.org/cache/epub/84/pg84-images.html,1,story3
-Peter Pan,J.M. Barrie,https://www.gutenberg.org/cache/epub/16/pg16-images.html,1,story4
+title,author,url,type,params,series
+Alice's Adventures in Wonderland,Lewis Carroll,https://www.gutenberg.org/cache/epub/11/pg11-images.html,1,,
+Don Quixote,Miguel de Cervantes,https://www.gutenberg.org/cache/epub/996/pg996-images.html,1,,
+Frankenstein,Mary Shelley,https://www.gutenberg.org/cache/epub/84/pg84-images.html,1,,
+Peter Pan,J.M. Barrie,https://www.gutenberg.org/cache/epub/16/pg16-images.html,1,,
+The Portrait of a Lady — Volume 1,Henry James,https://www.gutenberg.org/cache/epub/2833/pg2833-images.html.utf8,2,"link2H_PREF,link2HCH0001,link2HCH0002,link2HCH0003, link2HCH0004, link2HCH0005, link2HCH0006, link2HCH0007, link2HCH0008, link2HCH0009, link2HCH0010, link2HCH0011,link2HCH0012,link2HCH0013,link2HCH0014,link2HCH0015,link2HCH0016,link2HCH0017,link2HCH0018,link2HCH0019,link2HCH0020,link2HCH0021,link2HCH0022,link2HCH0023,link2HCH0024,link2HCH0025,link2HCH0026,link2HCH0027",The Portrait of a Lady
+The Portrait of a Lady — Volume 2,Henry James,https://www.gutenberg.org/cache/epub/2834/pg2834-images.html.utf8,2,"link2HCH0001,link2HCH0002, link2HCH0003,link2HCH0004, link2HCH0005, link2HCH0006, link2HCH0007, link2HCH0008, link2HCH0009, link2HCH0010, link2HCH0011,link2HCH0012,link2HCH0013,link2HCH0014,link2HCH0015,link2HCH0016,link2HCH0017,link2HCH0018,link2HCH0019,link2HCH0020,link2HCH0021,link2HCH0022,link2HCH0023,link2HCH0024,link2HCH0025,link2HCH0026,link2HCH0027,link2HCH0028",The Portrait of a Lady

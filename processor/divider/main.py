@@ -1,24 +1,25 @@
+import json
+
 from divider.csv_reader import CsvReader
 from divider.divider import divider_factory
 from divider.rdf import RdfParser
 from models import Session
-from models.book import Book
-from models.chapter import Chapter
+from models.book import Book, Chapter
 
 
 def divide_book(csv_path):
     data = CsvReader(csv_path).read()
 
     for item in data:
-        if Book.has_processed(item['url']):
+        if Book.first_by_url(item['url']):
             print(f"{item['title']} already processed, skip it")
             continue
 
         print(f"processing title: {item['title']}")
-
-        divider = divider_factory(item['type'])
-        chapters = [chapter for chapter in divider(url=item['url']).divide()]
-        rdf_info = RdfParser(item['url'].replace('-images.html', '.rdf')).parse()
+        divider = divider_factory(item['type'], item['url'], item['params'])
+        chapters = [chapter for chapter in divider.divide()]
+        rdf_url = item['url'].replace('-images.html.utf8', '.rdf').replace('-images.html', '.rdf')
+        rdf_info = RdfParser(rdf_url).parse()
         book = Book(
             title=rdf_info['title'],
             publisher=rdf_info['publisher'],
@@ -30,19 +31,26 @@ def divide_book(csv_path):
             total_words=sum([i['words'] for i in chapters]),
             source_url=item['url'],
             series=item['series'],
-            tags=','.join(rdf_info['subjects']),
+            tags=json.dumps(rdf_info['subjects'] or ''),
         )
 
         with Session() as session:
             session.add(book)
             session.flush()
+            chapter_objs = []
             for index, chapter in enumerate(chapters, 1):
-                session.add(Chapter(
+                chapter_objs.append(Chapter(
                     book_id=book.id,
                     chapter_num=index,
                     chapter_name=chapter['title'],
                     content=chapter['content'],
                 ))
+            if len(chapter_objs) > 10:
+                session.bulk_save_objects(chapter_objs)
+                chapter_objs.clear()
+
+            if len(chapter_objs) > 0:
+                session.bulk_save_objects(chapter_objs)
             session.commit()
 
         print(f"processing title: {item['title']} done")
