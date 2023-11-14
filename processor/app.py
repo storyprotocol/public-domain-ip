@@ -1,5 +1,8 @@
+import asyncio
+
 import click
 
+from character_extractor.description import collection_description
 from character_extractor.main import parse_book
 from divider.main import divide_book
 from models.create_table import create_table
@@ -24,6 +27,11 @@ def init_db():
 @main.command()
 def parse():
     parse_book()
+
+
+@main.command()
+def collection_desc():
+    asyncio.run(collection_description())
 
 
 if __name__ == '__main__':

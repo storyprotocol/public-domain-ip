@@ -1,7 +1,9 @@
+import uuid
 from enum import Enum
 
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy import Enum as SqlalchemyEnum
+from sqlalchemy.orm import relationship, joinedload
 
 from models import Base, Session
 
@@ -9,7 +11,7 @@ from models import Base, Session
 class Series(Base):
     __tablename__ = 'series'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String(256))
     description = Column(String(512))
 
@@ -24,9 +26,9 @@ class Series(Base):
 class SeriesBook(Base):
     __tablename__ = 'series_book'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    book_id = Column(Integer, ForeignKey('book.id'), nullable=False)
-    series_id = Column(Integer, ForeignKey('series.id'), nullable=False)
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    book_id = Column(String(36), ForeignKey('book.id'), nullable=False)
+    series_id = Column(String(36), ForeignKey('series.id'), nullable=False)
 
 
 class EntityTypeEnum(Enum):
@@ -38,8 +40,27 @@ class EntityTypeEnum(Enum):
 class SeriesEntity(Base):
     __tablename__ = 'series_entity'
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    series_id = Column(Integer, ForeignKey('series.id'), nullable=False)
-    type = Column(SqlalchemyEnum(EntityTypeEnum))
+    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
+    series_id = Column(String(36), ForeignKey('series.id'), nullable=False)
+    series = relationship(Series)
+    type = Column(SqlalchemyEnum(EntityTypeEnum.Character.value,
+                                 EntityTypeEnum.Location.value,
+                                 EntityTypeEnum.Etc.value))
     name = Column(String(256))
     description = Column(String(512))
+
+    @classmethod
+    def get_all_character(cls):
+        session = Session()
+        query = session.query(cls).filter_by(type=EntityTypeEnum.Character.value)
+        ret = query.options(joinedload(SeriesEntity.series)).all()
+        session.close()
+        return ret
+
+    @classmethod
+    def update_desc(cls, pk, desc):
+        session = Session()
+        session.query(cls).filter_by(id=pk, type=EntityTypeEnum.Character.value) \
+            .update({cls.description: desc})
+        session.commit()
+        session.close()
