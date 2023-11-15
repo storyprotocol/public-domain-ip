@@ -2,13 +2,13 @@ import asyncio
 
 from loguru import logger
 
-from character_extractor.utils import get_open_ai_msg
-from config import OPENAI_CLIENT
+from character_extractor.utils import get_open_ai_msg, load_openai_client
 from models.series import SeriesEntity
 
 
 async def openai_call(character):
-    chat_completion = await OPENAI_CLIENT.chat.completions.create(
+    client = load_openai_client()
+    chat_completion = await client.chat.completions.create(
         messages=[
             {
                 "role": "user",

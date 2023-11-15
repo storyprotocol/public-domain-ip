@@ -1,6 +1,6 @@
 import csv
 
-from divider.exceptions import CsvFormatError
+from exceptions import CsvFormatError
 
 
 class CsvReader:

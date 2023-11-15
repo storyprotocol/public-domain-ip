@@ -1,4 +1,3 @@
-import json
 import re
 
 from divider.base import BaseDivider
