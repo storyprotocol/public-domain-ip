@@ -3,6 +3,7 @@ import asyncio
 import click
 
 from character_extractor.description import collection_description
+from character_extractor.image import generate
 from character_extractor.main import parse_book
 from divider.main import divide_book
 from models.create_table import create_table
@@ -32,6 +33,11 @@ def process_entity():
 @main.command()
 def collection_desc():
     asyncio.run(collection_description())
+
+
+@main.command()
+def generate_image():
+    asyncio.run(generate())
 
 
 if __name__ == '__main__':

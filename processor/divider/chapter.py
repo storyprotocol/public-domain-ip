@@ -7,7 +7,12 @@ class GenericChapter(BaseChapter):
         selected_tags = self.soup.select('p, pre, i')
         ret = []
         for tag in selected_tags:
+            # Embedded text labels
             if tag.parent.name == 'p':
+                continue
+
+            # Text description of the illustration
+            if tag.parent.get('class') and 'fig' in tag.parent.get('class'):
                 continue
 
             content = tag.get_text()
