@@ -66,5 +66,9 @@ python app.py collection-desc
 ## Unittest
 Run unit tests
 ```shell
-python app.py test
+# run test
+python -m coverage run -m unittest discover tests
+
+# show coverage
+python -m coverage report
 ```

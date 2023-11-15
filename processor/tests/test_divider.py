@@ -1,6 +1,6 @@
 import unittest
 
-from divider.divider import GenericDivider, AnchorDivider, ContentDivider
+from divider.divider import GenericDivider, AnchorDivider, ContentDivider, divider_factory
 
 
 class Test(unittest.TestCase):
@@ -58,3 +58,13 @@ class Test(unittest.TestCase):
         self.assertEqual(chapters[-1]['title'], 'PART EIGHT - Chapter 19')
         self.assertTrue(chapters[-1]['content'].startswith('Going out of the nursery and being again alone'))
         self.assertTrue('which I have the power to put into it.”' in chapters[-1]['content'])
+
+    def test_divider_factory(self):
+        ret = divider_factory('1', 'https://www.gutenberg.org/cache/epub/1399/pg1399-images.html', '')
+        self.assertIsInstance(ret, GenericDivider)
+
+        ret = divider_factory('2', 'https://www.gutenberg.org/cache/epub/1399/pg1399-images.html', '')
+        self.assertIsInstance(ret, AnchorDivider)
+
+        ret = divider_factory('3', 'https://www.gutenberg.org/cache/epub/1399/pg1399-images.html', '')
+        self.assertIsInstance(ret, ContentDivider)

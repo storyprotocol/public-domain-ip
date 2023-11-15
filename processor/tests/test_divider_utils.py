@@ -1,6 +1,5 @@
 import unittest
 
-from divider.constants import SPACE_STR
 from divider.utils import get_worlds, list_to_content, clean_content, parse_anchor_params
 
 

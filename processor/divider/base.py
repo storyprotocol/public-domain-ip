@@ -1,5 +1,6 @@
 import abc
 import re
+from functools import cached_property
 
 import requests
 from bs4 import BeautifulSoup
@@ -15,9 +16,12 @@ class BaseDivider(metaclass=abc.ABCMeta):
     def __init__(self, url=None, embedded=False, chapter_class='chapter'):
         self.embedded = embedded
         self.chapter_class = chapter_class
+        self.url = url
 
-        response = requests.get(url)
-        self.soup = BeautifulSoup(response.text.replace("<br>", SPACE_STR).replace('<br/>', SPACE_STR), 'html.parser')
+    @cached_property
+    def soup(self):
+        response = requests.get(self.url)
+        return BeautifulSoup(response.text.replace("<br>", SPACE_STR).replace('<br/>', SPACE_STR), 'html.parser')
 
     def get_start_tag(self):
         start_section = self.soup.find(id=re.compile(self.START_TAG_ID, re.IGNORECASE))

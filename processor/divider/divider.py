@@ -128,4 +128,4 @@ def divider_factory(book_type, url, params):
         return GenericDivider(url=url)
     elif book_type == '2':
         return AnchorDivider(url=url, anchor_list=parse_anchor_params(params))
-    return ContentDivider()
+    return ContentDivider(url=url)
