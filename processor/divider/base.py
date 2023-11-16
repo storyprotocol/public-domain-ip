@@ -29,6 +29,10 @@ class BaseDivider(metaclass=abc.ABCMeta):
 
     @staticmethod
     def get_text_from_tag(tag):
+        # Text description of the illustration
+        if tag.parent.get('class') and 'caption' in tag.parent.get('class'):
+            return ''
+
         if tag.name not in ('p', 'span', 'i', 'pre'):
             return ''
 

@@ -1,6 +1,6 @@
 import re
 
-from divider.constants import SPACE_STR
+from divider.constants import SPACE_STR, VALUE_SYMBOLS
 
 
 def get_worlds(s: str) -> int:
@@ -15,6 +15,7 @@ def clean_content(text: str):
     # remove page number [123], {123}
     processed_text = re.sub(r'\{[\d]+\}', '', text)
     processed_text = re.sub(r'\[[\d]+\]', '', processed_text)
+    processed_text = re.sub(r'\{[ixv]+\}', '', processed_text)
 
     # Replace multiple spaces with one space
     processed_text = re.sub(r"\s+", " ", processed_text).replace("&nbsp", ' ')
@@ -26,7 +27,7 @@ def clean_content(text: str):
     return processed_text
 
 
-def parse_anchor_params(params: str):
+def parse_anchor_params(params: str, roman=False):
     # support range anchor link{01-24}: [link01,link02,...,link24]
     pattern = r'(\w+)\{(\d{1,10})-(\d{1,10})\}'
 
@@ -41,6 +42,22 @@ def parse_anchor_params(params: str):
 
         prefix, start_num, end_num = matches[0]
         for i in range(int(start_num), int(end_num) + 1):
-            ret.append(f'{prefix}{str(i).zfill(len(start_num))}')
+            num = int_to_roman(i) if roman else str(i).zfill(len(start_num))
+            ret.append(f'{prefix}{num}')
 
     return ret
+
+
+def parse_content_params(params: str):
+    return {'name': params}
+
+
+def int_to_roman(num: int) -> str:
+    roman = list()
+    for value, symbol in VALUE_SYMBOLS:
+        while num >= value:
+            num -= value
+            roman.append(symbol)
+        if num == 0:
+            break
+    return "".join(roman)

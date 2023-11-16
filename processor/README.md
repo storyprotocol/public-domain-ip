@@ -9,7 +9,7 @@ This tool is a pipeline to process the listed public domain books and store the 
 Each step has its command to execute seperately.
 
 ## Installation
-The tool requires python 3. 
+The tool requires python 3.6+ 
 Create the python venv and active the environment
 
 ```shell

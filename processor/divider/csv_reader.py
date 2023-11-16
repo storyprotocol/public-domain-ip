@@ -17,14 +17,17 @@ class CsvReader:
             reader = csv.reader(file)
             if not self.is_header_valid(next(reader)):
                 raise CsvFormatError('CSV file format is incorrect.')
+            for line, row in enumerate(reader, 1):
+                try:
+                    ret.append({
+                        'title': row[0],
+                        'author': row[1],
+                        'url': row[2],
+                        'type': row[3],
+                        'params': row[4],
+                        'series': row[5],
+                    })
+                except IndexError:
+                    raise CsvFormatError(f'CSV file row : {row} is incorrect.')
 
-            for row in reader:
-                ret.append({
-                    'title': row[0],
-                    'author': row[1],
-                    'url': row[2],
-                    'type': row[3],
-                    'params': row[4],
-                    'series': row[5],
-                })
         return ret

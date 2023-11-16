@@ -24,9 +24,10 @@ class GenericChapter(BaseChapter):
     def get_chapter_name(self) -> str:
         h2 = self.soup.find('h2')
         h3 = self.soup.find('h3')
+        ret = ''
         if h2 is not None:
-            return clean_content(h2.get_text())
+            ret = clean_content(h2.get_text())
         if h3 is not None:
-            return clean_content(h3.get_text())
+            ret += f' {clean_content(h3.get_text())}'
 
-        return ''
+        return ret

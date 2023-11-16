@@ -42,10 +42,7 @@ class Test(unittest.TestCase):
 
     def test_content_divider(self):
         test_url = 'https://www.gutenberg.org/cache/epub/1399/pg1399-images.html'
-        d = ContentDivider(url=test_url,
-                           sep_filters={'name': 'h3'},
-                           book_filters={'name': 'h2'},
-                           chapter_filters={'name': 'h3'})
+        d = ContentDivider(url=test_url, sep_filters={'name': 'h3'})
         chapters = []
         for chapter in d.divide():
             chapters.append(chapter)
