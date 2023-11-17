@@ -24,7 +24,7 @@ def parse_book():
 
         logger.info(f'parsing: {series_name}')
         chapters = Chapter.get_chapters_by_book_ids([book.id for book in books])
-        parser = NlpbookParser(chapters, books[0].run_npl_divide_chapter)
+        parser = SpacyParser(chapters, books[0].run_npl_divide_chapter)
         results = parser.parse()
 
         tags = []

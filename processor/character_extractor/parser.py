@@ -85,6 +85,7 @@ class NlpbookParser(BaseParser):
         booknlp = book_nlp("en", model_params)
         tem_file = self.create_tem_file()
         tem_file.write(content.encode())
+        tem_file.seek(0)
         tem_folder = self.create_tem_folder()
 
         booknlp.process(tem_file.name, tem_folder.name, self.book_id)
@@ -109,8 +110,8 @@ class NlpbookParser(BaseParser):
         return {'PERSON': result}
 
     def parse(self):
-        ret = []
         if self.run_npl_divide_chapter:
+            ret = []
             for chapter in self.chapters:
                 result_folder = self.run_nlp(chapter.content)
                 ret.append({
