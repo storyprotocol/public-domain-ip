@@ -12,7 +12,7 @@ def list_to_content(content_list) -> str:
 
 
 def clean_content(text: str):
-    # remove page number [123], {123}
+    # remove page number [123], {123}, {ixv}
     processed_text = re.sub(r'\{[\d]+\}', '', text)
     processed_text = re.sub(r'\[[\d]+\]', '', processed_text)
     processed_text = re.sub(r'\{[ixv]+\}', '', processed_text)

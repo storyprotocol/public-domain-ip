@@ -25,7 +25,7 @@ def divide_book(csv_path):
         book = Book(
             title=rdf_info['title'],
             publisher=rdf_info['publisher'],
-            authors=rdf_info['author'],
+            authors=json.dumps(rdf_info['authors'] or ''),
             language=rdf_info['language'],
             rights=rdf_info['rights'],
             issued_date=rdf_info['issued'],
@@ -34,6 +34,7 @@ def divide_book(csv_path):
             source_url=item['url'],
             series=item['series'],
             tags=json.dumps(rdf_info['subjects'] or ''),
+            run_npl_divide_chapter=item['divide_chapter']
         )
 
         with Session() as session:
@@ -54,5 +55,3 @@ def divide_book(csv_path):
             if len(chapter_objs) > 0:
                 session.bulk_save_objects(chapter_objs)
             session.commit()
-
-        logger.info(f"processing title: {item['title']} done")

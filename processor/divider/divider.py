@@ -69,8 +69,6 @@ class AnchorDivider(BaseDivider):
         try:
             tag = self.soup.find(id=current_id).find_next()
         except AttributeError:
-            if self.anchor_roman_list is None:
-                raise
             current_id = self.anchor_roman_list[0]
             tag = self.soup.find(id=current_id).find_next()
 

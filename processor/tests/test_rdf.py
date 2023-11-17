@@ -11,7 +11,7 @@ class Test(unittest.TestCase):
         info = p.parse()
 
         self.assertEqual(info['title'], 'Anna Karenina')
-        self.assertEqual(info['author'], 'Tolstoy, Leo, graf')
+        self.assertEqual(info['authors'], ['Tolstoy, Leo, graf'])
         self.assertEqual(info['publisher'], 'Project Gutenberg')
         self.assertEqual(info['issued'], '1998-07-01')
         self.assertEqual(info['rights'], 'Public domain in the USA.')

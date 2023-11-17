@@ -1,4 +1,4 @@
-from rdflib import Graph
+from rdflib import Graph, Namespace
 
 
 class RdfParser:
@@ -16,15 +16,12 @@ class RdfParser:
                dcterms:language/rdf:value ?language ;
                dcterms:rights ?rights ;
                dcterms:publisher ?publisher .
-        ?creator 
-        pgterms:name ?author  .
     }
         """
         results = self.g.query(query)
         for result in results:
             ret = {
                 "title": str(result.title),
-                "author": str(result.author),
                 "publisher": str(result.publisher),
                 "issued": str(result.issued),
                 "rights": str(result.rights),
@@ -49,4 +46,17 @@ class RdfParser:
     def parse(self):
         ret = self.get_basic_info()
         ret['subjects'] = self.get_subjects()
+        ret['authors'] = self.get_authors()
+        return ret
+
+    def get_authors(self):
+        query = """
+        SELECT ?name WHERE {
+          ?ebook dcterms:creator/pgterms:name ?name.
+        }
+        """
+        results = self.g.query(query)
+        ret = []
+        for result in results:
+            ret.append(str(result.name))
         return ret

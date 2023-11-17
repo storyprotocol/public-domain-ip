@@ -5,6 +5,7 @@ from exceptions import EnvError
 
 SPACY_NLP = None
 OPENAI_CLIENT = None
+Book_NLP = None
 
 
 def lazy_load_spacy_nlp():
@@ -14,6 +15,14 @@ def lazy_load_spacy_nlp():
         SPACY_NLP = spacy.load('en_core_web_trf')
 
     return SPACY_NLP
+
+
+def lazy_load_booknlp():
+    global Book_NLP
+    if Book_NLP is None:
+        from booknlp.booknlp import BookNLP
+        Book_NLP = BookNLP
+    return Book_NLP
 
 
 def get_open_ai_msg(character: str, series_name: str) -> str:

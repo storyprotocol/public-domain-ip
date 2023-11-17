@@ -1,6 +1,6 @@
 import uuid
 
-from sqlalchemy import Column, Integer, String, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, Text, ForeignKey, BOOLEAN
 from sqlalchemy.orm import subqueryload
 
 from models import Base, Session
@@ -21,7 +21,8 @@ class Book(Base):
     source_url = Column(String(256))
     series = Column(String(256))
     tags = Column(Text)
-    genre = Column(Text)
+    genre = Column(String(256))
+    run_npl_divide_chapter = Column(BOOLEAN)
 
     def __str__(self):
         return f'book: {self.id}_{self.title}'
@@ -62,7 +63,7 @@ class Chapter(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     book_id = Column(String(36), ForeignKey('book.id'), nullable=False)
     chapter_num = Column(Integer)
-    chapter_name = Column(String(256))
+    chapter_name = Column(String(512))
     content = Column(Text)
 
     def __str__(self):

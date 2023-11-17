@@ -2,7 +2,6 @@ import uuid
 from enum import Enum
 
 from sqlalchemy import Column, String, ForeignKey
-from sqlalchemy import Enum as SqlalchemyEnum
 from sqlalchemy.orm import relationship, joinedload
 
 from models import Base, Session
@@ -42,10 +41,9 @@ class SeriesEntity(Base):
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     series_id = Column(String(36), ForeignKey('series.id'), nullable=False)
+    chapter_id = Column(String(36), ForeignKey('chapter.id'), nullable=True)
     series = relationship(Series)
-    type = Column(SqlalchemyEnum(EntityTypeEnum.Character.value,
-                                 EntityTypeEnum.Location.value,
-                                 EntityTypeEnum.Etc.value))
+    type = Column(String(64))
     name = Column(String(256))
     description = Column(String(512))
 

@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from loguru import logger
 
-from character_extractor.parse_by_spacy import SpacyParser
+from character_extractor.parser import NlpbookParser, SpacyParser
 from models import Session
 from models.book import Book, Chapter
 from models.series import Series, SeriesBook, SeriesEntity, EntityTypeEnum
@@ -24,9 +24,8 @@ def parse_book():
 
         logger.info(f'parsing: {series_name}')
         chapters = Chapter.get_chapters_by_book_ids([book.id for book in books])
-        parser = SpacyParser(chapters)
-        result = parser.parse()
-        logger.info(f'parse {series_name} done')
+        parser = NlpbookParser(chapters, books[0].run_npl_divide_chapter)
+        results = parser.parse()
 
         tags = []
         for book in books:
@@ -39,17 +38,19 @@ def parse_book():
             for book in books:
                 session.add(SeriesBook(book_id=book.id, series_id=series_obj.id))
 
-            series_entity_objs = []
-            for index, character in enumerate(list(result['PERSON'].keys())[0:50]):
-                series_entity_objs.append(SeriesEntity(
-                    series_id=series_obj.id,
-                    type=EntityTypeEnum.Character.value,
-                    name=character,
-                    description=''
-                ))
-                if len(series_entity_objs) > 10:
+            for result in results:
+                series_entity_objs = []
+                for index, character in enumerate(list(result['result']['PERSON'].keys())[0:50]):
+                    series_entity_objs.append(SeriesEntity(
+                        series_id=series_obj.id,
+                        type=EntityTypeEnum.Character.value,
+                        name=character,
+                        chapter_id=result['chapter_id'],
+                        description=''
+                    ))
+                    if len(series_entity_objs) > 10:
+                        session.bulk_save_objects(series_entity_objs)
+                        series_entity_objs.clear()
+                if len(series_entity_objs) > 0:
                     session.bulk_save_objects(series_entity_objs)
-                    series_entity_objs.clear()
-            if len(series_entity_objs) > 0:
-                session.bulk_save_objects(series_entity_objs)
             session.commit()
