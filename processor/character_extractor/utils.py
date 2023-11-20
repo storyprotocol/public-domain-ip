@@ -5,7 +5,7 @@ from exceptions import EnvError
 
 SPACY_NLP = None
 OPENAI_CLIENT = None
-Book_NLP = None
+BOOK_NLP = None
 
 
 def lazy_load_spacy_nlp():
@@ -18,33 +18,15 @@ def lazy_load_spacy_nlp():
 
 
 def lazy_load_booknlp():
-    global Book_NLP
-    if Book_NLP is None:
+    global BOOK_NLP
+    if BOOK_NLP is None:
         from booknlp.booknlp import BookNLP
-        Book_NLP = BookNLP
-    return Book_NLP
+        BOOK_NLP = BookNLP
+    return BOOK_NLP
 
 
 def get_open_ai_msg(character: str, series_name: str) -> str:
     return f"Describe in a short sentence what kind of character {character} is in {series_name}"
-
-
-def generate_character_msg(character: str, series_name: str) -> str:
-    return f"""
-    describe the appearance of character {character} in novel {series_name}.
-    Just talk about appearance.
-    """
-
-
-def generate_image_msg(desc: str) -> str:
-    return f'''
-    character description :  {desc}.
-    Please help me draw a physical portrait of this character.
-    I have three requests:
-        1. Use comic style.
-        2. Just draw one.
-        3. No text.
-    '''
 
 
 def load_openai_client():

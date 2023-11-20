@@ -1,6 +1,11 @@
 import unittest
 
-from divider.utils import get_worlds, list_to_content, clean_content, parse_anchor_params
+from divider.utils import (get_worlds,
+                           list_to_content,
+                           clean_content,
+                           parse_anchor_params,
+                           int_to_roman,
+                           parse_content_params)
 
 
 class Test(unittest.TestCase):
@@ -58,3 +63,14 @@ class Test(unittest.TestCase):
         ret = parse_anchor_params('chapter{01-12}')
         self.assertEqual(ret, ['chapter01', 'chapter02', 'chapter03', 'chapter04', 'chapter05', 'chapter06',
                                'chapter07', 'chapter08', 'chapter09', 'chapter10', 'chapter11', 'chapter12'])
+
+    def test_int_to_roman(self):
+        self.assertEqual(int_to_roman(10), 'X')
+        self.assertEqual(int_to_roman(1), 'I')
+        self.assertEqual(int_to_roman(5), 'V')
+        self.assertEqual(int_to_roman(4), 'IV')
+        self.assertEqual(int_to_roman(100), 'C')
+
+    def test_parse_content_params(self):
+        self.assertEqual(parse_content_params('h2'), {'name': 'h2'})
+        self.assertEqual(parse_content_params('h3'), {'name': 'h3'})
