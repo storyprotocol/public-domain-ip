@@ -49,9 +49,9 @@ class Book(Base):
 
     def get_chapters(self):
         session = Session()
-        query = session.query(Chapter).filter_by(book_id=self.id).order_by('chapter_num')
+        ret = session.query(Chapter).filter_by(book_id=self.id).order_by('chapter_num').all()
         session.close()
-        return query.all()
+        return ret
 
     def get_series(self):
         return self.series or self.title
@@ -75,7 +75,7 @@ class Chapter(Base):
     @classmethod
     def get_chapters_by_book_ids(cls, book_ids):
         session = Session()
-        query = session.query(cls).filter(cls.book_id.in_(book_ids)). \
-            order_by('book_id', 'chapter_num')
+        ret = session.query(cls).filter(cls.book_id.in_(book_ids)). \
+            order_by('book_id', 'chapter_num').all()
         session.close()
-        return query.all()
+        return ret
