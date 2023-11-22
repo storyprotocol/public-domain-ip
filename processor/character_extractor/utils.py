@@ -39,3 +39,21 @@ def load_openai_client():
         OPENAI_CLIENT = AsyncOpenAI(api_key=OPENAI_API_KEY)
 
     return OPENAI_CLIENT
+
+
+def generate_character_msg(character: str, series_name: str) -> str:
+    return f"""
+    describe the appearance of character {character} in novel {series_name}.
+    Just talk about appearance.
+    """
+
+
+def generate_image_msg(desc: str) -> str:
+    return f'''
+    character description :  {desc}.
+    Please help me draw a physical portrait of this character.
+    I have three requests:
+        1. Use comic style.
+        2. Just draw one.
+        3. No text.
+    '''
