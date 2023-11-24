@@ -1,0 +1,71 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  // provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model IP_ORG {
+  id  String @id @default(uuid())
+  registry_addr String
+  name String 
+  symbol String
+  description String?  
+  metadata_url String?
+  owner String?
+  org_address String?
+  tx_hash String?
+  status  Int
+}
+
+model IP_ORG_RELATION_TYPE{
+  id  String @id @default(uuid())
+  ip_org_id String
+  relationship_type String
+  related_src Int
+  related_dst Int
+  allowed_srcs String?
+  allowed_dsts String?
+  tx_hash String?
+  status Int
+}
+
+model IP_ASSET{
+  id  String @id @default(uuid())
+  ip_org_id String
+  type Int
+  name String
+  ip_hash String
+  url String?
+  data String?
+  owner String
+  asset_seq_id Int?
+  tx_hash String?
+  status Int
+}
+
+model RELATIONSHIP{
+  id  String @id @default(uuid())
+  ip_org_id String
+  relationship_type String
+  src_address String
+  src_id String
+  src_type Int
+  dst_address String
+  dst_id String
+  dst_type Int
+  relationship_seq_id Int?
+  src_asset_id Int?
+  dst_asset_id Int?
+  tx_hash String?
+  status Int
+}
+
+
+
