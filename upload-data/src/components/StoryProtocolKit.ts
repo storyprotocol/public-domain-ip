@@ -16,6 +16,10 @@ import {
   RegisterRelationshipResponse,
 } from "@story-protocol/core-sdk";
 
+import { RegisterIPOrgParams } from "../interfaces/IIPOrg";
+import { RegisterIPOrgRelationTypeParams } from "../interfaces/IRelationship";
+import { RegisterIPAssetParams } from "../interfaces/IIPAsset";
+import { RelationshipParams } from "../interfaces/IRelationship";
 import { fileLogger } from "../utils/WLogger";
 
 export class StoryProtocolKit {
@@ -23,13 +27,13 @@ export class StoryProtocolKit {
 
   public static createIPOrg(
     client: Client,
-    orgItem: any
+    orgItem: RegisterIPOrgParams
   ): Promise<CreateIPOrgResponse> {
     const params: CreateIPOrgRequest = {
       name: orgItem.name,
       symbol: orgItem.symbol,
       owner: orgItem.owner,
-      ipAssetTypes: orgItem.ip_asset_types,
+      ipAssetTypes: orgItem.assetTypes,
       txOptions: {
         waitForTransaction: true,
       },
@@ -39,21 +43,21 @@ export class StoryProtocolKit {
 
   public static createIPOrgRelationType(
     client: Client,
-    item: any
+    item: RegisterIPOrgRelationTypeParams
   ): Promise<RegisterRelationshipTypeResponse> {
-    if (!item.org_address) {
-      fileLogger.error(`org_address is null: ${JSON.stringify(item)}}`);
-      throw new Error("org_address is null");
+    if (!item.ipOrg) {
+      fileLogger.error(`ipOrg is null: ${JSON.stringify(item)}}`);
+      throw new Error("ipOrg is null");
     }
     const params: RegisterRelationshipTypeRequest = {
-      ipOrgId: item.org_address,
-      relType: item.relationship_type,
+      ipOrgId: item.ipOrg,
+      relType: item.relType,
       relatedElements: {
-        src: item.related_src,
-        dst: item.related_dst,
+        src: item.allowedElements.src,
+        dst: item.allowedElements.dst,
       },
-      allowedSrcs: item.allowed_srcs,
-      allowedDsts: item.allowed_dsts,
+      allowedSrcs: item.allowedSrcs,
+      allowedDsts: item.allowedDsts,
       preHooksConfig: [],
       postHooksConfig: [],
       txOptions: {
@@ -65,17 +69,17 @@ export class StoryProtocolKit {
 
   public static createIPAsset(
     client: Client,
-    item: any
+    item: RegisterIPAssetParams
   ): Promise<CreateIpAssetResponse> {
     // const preHooksData: string[] = [];
     // const postHooksData: string[] = [];
     const params: CreateIpAssetRequest = {
       name: item.name,
-      type: item.type,
-      ipOrgId: item.org_address,
+      type: item.ipAssetType,
+      ipOrgId: item.orgAddress,
       owner: item.owner,
       mediaUrl: item.mediaUrl,
-      contentHash: item.contentHash,
+      contentHash: item.hash,
       txOptions: {
         waitForTransaction: true,
       },
@@ -85,18 +89,18 @@ export class StoryProtocolKit {
 
   public static createRelationship(
     client: Client,
-    item: any
+    item: RelationshipParams
   ): Promise<RegisterRelationshipResponse> {
     // const preHooksData: string[] = [];
     // const postHooksData: string[] = [];
     const params: RegisterRelationshipRequest = {
-      ipOrgId: item.org_address,
-      relType: item.relationship_type,
-      srcContract: item.srcContract,
-      srcTokenId: item.srcTokenId,
+      ipOrgId: item.orgAddress,
+      relType: item.relType,
+      srcContract: item.srcAddress,
+      srcTokenId: item.srcId,
       srcType: item.srcType,
-      dstContract: item.dstContract,
-      dstTokenId: item.dstTokenId,
+      dstContract: item.dstAddress,
+      dstTokenId: item.dstId,
       dstType: item.dstType,
       preHookData: [],
       postHookData: [],

@@ -1,30 +1,26 @@
 import { BaseUpdateFields } from "./IBase";
 
 export interface RegisterIPOrgParams {
-  registry: string;
   name: string;
   symbol: string;
-  description: string;
-  metadata_url: string;
+  owner: string;
+  assetTypes: string[];
 }
 
 export const DefaultRegisterIPOrgParams: RegisterIPOrgParams = {
-  registry: "",
   name: "",
   symbol: "",
-  description: "",
-  metadata_url: "",
+  owner: "",
+  // 1: story, 2: character, 3: art, 4: chapter, 5: location, 6: item
+  assetTypes: ["1", "2", "3", "4", "5", "6"],
 };
 
 export interface IPOrgItem {
   id: string;
   org_address?: string | null;
-  registry_addr: string;
   name: string;
   symbol: string;
-  description?: string | null;
-  owner?: string | null;
-  metadata_url?: string | null;
+  owner: string;
   tx_hash?: string | null;
   status: number;
 }

@@ -1,6 +1,7 @@
 import { BaseUpdateFields } from "./IBase";
 
 export interface RegisterIPAssetParams {
+  orgAddress: string;
   owner: string;
   name: string;
   ipAssetType: number;
@@ -27,7 +28,6 @@ export interface IPAssetItem {
   name: string;
   ip_hash: string;
   url?: string | null;
-  data?: string | null;
   owner: string;
   asset_seq_id?: number | null;
   tx_hash?: string | null;
@@ -35,5 +35,5 @@ export interface IPAssetItem {
 }
 
 export interface IPAssetUpdateFields extends BaseUpdateFields {
-  asset_seq_id?: number;
+  asset_seq_id?: string;
 }

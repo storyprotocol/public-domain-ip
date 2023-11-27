@@ -13,12 +13,9 @@ datasource db {
 
 model IP_ORG {
   id  String @id @default(uuid())
-  registry_addr String
   name String 
   symbol String
-  description String?  
-  metadata_url String?
-  owner String?
+  owner String
   org_address String?
   tx_hash String?
   status  Int
@@ -43,9 +40,8 @@ model IP_ASSET{
   name String
   ip_hash String
   url String?
-  data String?
   owner String
-  asset_seq_id Int?
+  asset_seq_id String?
   tx_hash String?
   status Int
 }
@@ -56,13 +52,11 @@ model RELATIONSHIP{
   relationship_type String
   src_address String
   src_id String
-  src_type Int
+  src_type String
   dst_address String
   dst_id String
-  dst_type Int
-  relationship_seq_id Int?
-  src_asset_id Int?
-  dst_asset_id Int?
+  dst_type String
+  relationship_seq_id String?
   tx_hash String?
   status Int
 }

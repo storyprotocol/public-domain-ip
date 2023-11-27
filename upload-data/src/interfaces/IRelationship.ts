@@ -7,8 +7,8 @@ export interface RegisterIPOrgRelationTypeParams {
     src: number;
     dst: number;
   };
-  allowedSrcs: number[];
-  allowedDsts: number[];
+  allowedSrcs: string[];
+  allowedDsts: string[];
 }
 
 export const DefaultRegisterIPOrgRelationTypeParams: RegisterIPOrgRelationTypeParams =
@@ -24,13 +24,14 @@ export const DefaultRegisterIPOrgRelationTypeParams: RegisterIPOrgRelationTypePa
   };
 
 export interface RelationshipParams {
+  orgAddress: string;
   relType: string;
   srcAddress: string;
-  srcId: number;
-  srcType: number;
+  srcId: string;
+  srcType: string;
   dstAddress: string;
-  dstId: number;
-  dstType: number;
+  dstId: string;
+  dstType: string;
 }
 
 export interface IPOrgRelationTypeItem {
@@ -53,21 +54,19 @@ export interface RelationshipItem {
   relationship_type: string;
   src_address: string;
   src_id: string;
-  src_type: number;
+  src_type: string;
   dst_address: string;
   dst_id: string;
-  dst_type: number;
+  dst_type: string;
   relationship_seq_id?: number | null;
-  src_asset_id?: number | null;
-  dst_asset_id?: number | null;
+  src_asset_id?: string | null;
+  dst_asset_id?: string | null;
   tx_hash?: string | null;
   status: number;
 }
 
 export interface RelationshipUpdateFields extends BaseUpdateFields {
-  relationship_seq_id?: number;
-  src_asset_id?: number;
-  dst_asset_id?: number;
+  relationship_seq_id?: string;
 }
 
 export interface IPOrgRelationTypeRegisteredEvent {
