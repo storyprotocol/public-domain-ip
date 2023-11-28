@@ -8,3 +8,4 @@ loguru==0.7.2
 openai
 coverage==7.3.2
 booknlp==1.0.7.1
+pillow==10.1.0
