@@ -40,7 +40,7 @@ def parse_book():
 
             for result in results:
                 series_entity_objs = []
-                for index, character in enumerate(list(result['result']['PERSON'].keys())[0:50]):
+                for index, character in enumerate(list(result['result'].get('PERSON', {}).keys())[0:50]):
                     series_entity_objs.append(SeriesEntity(
                         series_id=series_obj.id,
                         type=EntityTypeEnum.Character.value,

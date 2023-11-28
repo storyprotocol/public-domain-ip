@@ -1,1 +1,1 @@
-IMAGE_ROOT_FOLDER = 'images'
+IMAGE_ROOT_FOLDER = '.././images'

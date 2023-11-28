@@ -11,7 +11,7 @@ from models.series import SeriesEntity
 
 
 async def openai_generate_image(character: SeriesEntity):
-    if os.path.exists(character.image_file_name()):
+    if character.url:
         return
 
     client = load_openai_client()
@@ -28,6 +28,7 @@ async def openai_generate_image(character: SeriesEntity):
     image = Image.open(image_data)
     image = image.convert('RGB')
     image.save(character.image_file_name(), quality=95)
+    SeriesEntity.update_url(character.id, character.image_file_name()[5:])
 
 
 async def generate():

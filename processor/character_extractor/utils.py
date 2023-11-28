@@ -52,8 +52,9 @@ def generate_image_msg(desc: str) -> str:
     return f'''
     character description :  {desc}.
     Please help me draw a physical portrait of this character.
-    I have three requests:
+    I have 4 requests:
         1. Use comic style.
-        2. Just draw one.
+        2. Just draw one character in the center.
         3. No text.
+        4. Face to the front.
     '''

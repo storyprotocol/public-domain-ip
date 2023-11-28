@@ -47,6 +47,7 @@ class SeriesEntity(Base):
     type = Column(String(64))
     name = Column(String(256))
     description = Column(String(512))
+    url = Column(String(512))
 
     def image_file_name(self):
         return f"{IMAGE_ROOT_FOLDER}/{self.series.title.replace(' ', '_')}---{self.name}.jpg"
@@ -64,5 +65,13 @@ class SeriesEntity(Base):
         session = Session()
         session.query(cls).filter_by(id=pk, type=EntityTypeEnum.Character.value) \
             .update({cls.description: desc})
+        session.commit()
+        session.close()
+
+    @classmethod
+    def update_url(cls, pk, url):
+        session = Session()
+        session.query(cls).filter_by(id=pk, type=EntityTypeEnum.Character.value) \
+            .update({cls.url: url})
         session.commit()
         session.close()
