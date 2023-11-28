@@ -2,7 +2,7 @@ import asyncio
 
 from loguru import logger
 
-from character_extractor.utils import get_open_ai_msg, load_openai_client
+from character_extractor.utils import load_openai_client, generate_character_msg
 from models.series import SeriesEntity
 
 
@@ -12,7 +12,7 @@ async def openai_call(character):
         messages=[
             {
                 "role": "user",
-                "content": get_open_ai_msg(character.name, character.series.title),
+                "content": generate_character_msg(character.name, character.series.title),
             }
         ],
         model="gpt-3.5-turbo",

@@ -4,6 +4,7 @@ from enum import Enum
 from sqlalchemy import Column, String, ForeignKey
 from sqlalchemy.orm import relationship, joinedload
 
+from character_extractor.constants import IMAGE_ROOT_FOLDER
 from models import Base, Session
 
 
@@ -46,6 +47,9 @@ class SeriesEntity(Base):
     type = Column(String(64))
     name = Column(String(256))
     description = Column(String(512))
+
+    def image_file_name(self):
+        return f"{IMAGE_ROOT_FOLDER}/{self.series.title.replace(' ', '_')}---{self.name}.jpg"
 
     @classmethod
     def get_all_character(cls):
