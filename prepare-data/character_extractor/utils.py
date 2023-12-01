@@ -43,18 +43,17 @@ def load_openai_client():
 
 def generate_character_msg(character: str, series_name: str) -> str:
     return f"""
-    describe the appearance of character {character} in novel {series_name}.
-    Just talk about appearance.
+    describe the character {character} in novel {series_name}. The describe should be in 2 
+    sections, one is the main story, another is the appearance. 
+    If the character is not in the story, just say: not in the story.
+    If the character is a person, please tell me the age, face, hair, cloth, and the time he lives
     """
 
 
 def generate_image_msg(desc: str) -> str:
     return f'''
-    character description :  {desc}.
-    Please help me draw a physical portrait of this character.
-    I have 4 requests:
-        1. Use comic style.
-        2. Just draw one character in the center.
-        3. No text.
-        4. Face to the front.
+    Give the character description :  {desc}.
+    Create physical comic style portrait of this character.
+    The character should be in the center, facing the front, and not horror looking. 
+    Only one character and no text in this portrait.
     '''

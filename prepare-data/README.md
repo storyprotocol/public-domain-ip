@@ -63,6 +63,15 @@ This is an optional step. If you have ChatGPT key, you can config it in the envi
 python app.py collection-desc
 ```
 
+## Mapping books and entities to ip
+This tool will map the book and characters to ip org and ip assets. It will also build the relationship between ip assets
+```shell
+python app.py map-ip
+```
+
+## Go to upload script
+Now the ip data are ready to upload to story protocol. Please go to upload-data folder to continue next step
+
 ## Unittest
 Run unit tests
 ```shell

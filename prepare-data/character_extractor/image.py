@@ -2,7 +2,7 @@ import asyncio
 import base64
 import os
 from io import BytesIO
-
+from loguru import logger
 from PIL import Image
 
 from character_extractor.constants import IMAGE_ROOT_FOLDER
@@ -10,8 +10,12 @@ from character_extractor.utils import generate_image_msg, load_openai_client
 from models.series import SeriesEntity
 
 
-async def openai_generate_image(character: SeriesEntity):
-    if character.url:
+def image_file_name(title, name):
+    return f"{title.replace(' ', '_')}---{name.replace(' ', '_')}.jpg"
+
+
+async def openai_generate_image(character: SeriesEntity, image_url):
+    if character.image_url:
         return
 
     client = load_openai_client()
@@ -27,8 +31,9 @@ async def openai_generate_image(character: SeriesEntity):
     image_data.seek(0)
     image = Image.open(image_data)
     image = image.convert('RGB')
-    image.save(character.image_file_name(), quality=95)
-    SeriesEntity.update_url(character.id, character.image_file_name()[5:])
+    image_path = f"{IMAGE_ROOT_FOLDER}/{image_url}"
+    image.save(image_path, quality=95)
+    SeriesEntity.update_url(character.id, image_url)
 
 
 async def generate():
@@ -38,8 +43,13 @@ async def generate():
         pass
     characters = SeriesEntity.get_all_character()
     tasks = []
-    for character in characters:
-        tasks.append(openai_generate_image(character))
+    for character, series in characters:
+        if character.image_url:
+            logger.info(f'{character.name} in {series.title} has precessed, skip it')
+            continue
+        logger.info(f'generate image of {character.name} in {series.title}')
+        image_url = image_file_name(series.title, character.name)
+        tasks.append(openai_generate_image(character, image_url))
         if len(tasks) == 1:
             await asyncio.gather(*tasks)
             tasks.clear()

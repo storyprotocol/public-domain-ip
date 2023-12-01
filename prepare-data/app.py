@@ -6,6 +6,7 @@ from character_extractor.description import collection_description
 from character_extractor.image import generate
 from character_extractor.main import parse_book
 from divider.main import divide_book
+from mapper.main import map_ip_asset
 from models.create_table import create_table
 
 
@@ -31,13 +32,18 @@ def process_entity():
 
 
 @main.command()
-def collection_desc():
+def collect_desc():
     asyncio.run(collection_description())
 
 
 @main.command()
 def generate_image():
     asyncio.run(generate())
+
+
+@main.command()
+def map_ip():
+    map_ip_asset()
 
 
 if __name__ == '__main__':
