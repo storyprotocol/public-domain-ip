@@ -28,7 +28,7 @@ export class UploadRelationship {
     this.client = client;
   }
 
-  public async upload(): Promise<UploadTotal> {
+  public async upload(iporg?: string): Promise<UploadTotal> {
     const result: UploadTotal = {
       newItem: 0,
       sendingItem: 0,
@@ -36,7 +36,7 @@ export class UploadRelationship {
       failedItem: 0,
     };
 
-    const relationships = await this.getRelationships();
+    const relationships = await this.getRelationships(iporg);
     if (relationships.length == 0) {
       fileLogger.info("No relationship need to upload.");
       return result;
@@ -44,18 +44,25 @@ export class UploadRelationship {
 
     try {
       for (const relationship of relationships) {
+        fileLogger.info(
+          `handling relationship: ${JSON.stringify(relationship)}`
+        );
         switch (relationship.status) {
           case RELATIONSHIP_STATUS.CREATED:
-            this.uploadRelationship(relationship);
+            await this.uploadRelationship(relationship);
+            result.newItem++;
             break;
           case RELATIONSHIP_STATUS.FAILED:
-            this.uploadRelationship(relationship);
+            result.failedItem++;
+            // TODO
             break;
           case RELATIONSHIP_STATUS.SENDING:
-            this.handleSendingRelationship(relationship);
+            await this.handleSendingRelationship(relationship);
+            result.sendingItem++;
             break;
           case RELATIONSHIP_STATUS.SENT:
-            this.handleSentRelationship(relationship);
+            await this.handleSentRelationship(relationship);
+            result.sentItem++;
             break;
           default:
             fileLogger.warn(
@@ -63,10 +70,9 @@ export class UploadRelationship {
             );
         }
       }
+      return result;
     } catch (e) {
       throw e;
-    } finally {
-      return result;
     }
   }
 
@@ -76,25 +82,37 @@ export class UploadRelationship {
     }
   }
 
-  private async getRelationships() {
+  private async getRelationships(iporg?: string) {
     const relationships = await getRelationships(
       this.prisma,
-      RELATIONSHIP_STATUS.FINISHED
+      RELATIONSHIP_STATUS.FINISHED,
+      iporg
     );
     fileLogger.info(`Fund ${relationships.length} relationship(s).`);
     return relationships;
   }
 
   private async uploadRelationship(item: RelationshipItem) {
+    const registryAddress = process.env.NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT;
+    if (!registryAddress) {
+      throw new Error(
+        `NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT is not set: ${JSON.stringify(
+          item
+        )}}`
+      );
+    }
+
     if (!item.org_address) {
       throw new Error(`org_address is null: ${JSON.stringify(item)}}`);
     }
-    if (!item.src_asset_id || !item.dst_asset_id) {
+
+    if (!item.src_asset_seq_id || !item.dst_asset_seq_id) {
       throw new Error(
-        `src_asset_id or dst_asset_id is null: ${JSON.stringify(item)}}`
+        `src_asset_seq_id or dst_asset_seq_id is null: ${JSON.stringify(item)}}`
       );
     }
     let txResult: RegisterRelationshipResponse | undefined;
+
     try {
       await updateRelationship(this.prisma, item.id, {
         status: RELATIONSHIP_STATUS.SENDING,
@@ -103,12 +121,10 @@ export class UploadRelationship {
       txResult = await StoryProtocolKit.createRelationship(this.client, {
         orgAddress: item.org_address,
         relType: item.relationship_type,
-        srcAddress: item.src_address,
-        srcId: item.src_asset_id,
-        srcType: item.src_type,
-        dstAddress: item.dst_address,
-        dstId: item.dst_asset_id,
-        dstType: item.dst_type,
+        srcAddress: registryAddress,
+        srcId: item.src_asset_seq_id,
+        dstAddress: registryAddress,
+        dstId: item.dst_asset_seq_id,
       });
 
       await updateRelationship(this.prisma, item.id, {

@@ -1,15 +1,33 @@
-import { fileLogger } from "../utils/WLogger";
 import { PrismaClient } from "@prisma/client";
 import { IPOrgUpdateFields } from "../interfaces/IIPOrg";
+import { fileLogger } from "../utils/WLogger";
 
-export async function getIpOrgs(prisma: PrismaClient, ipOrgStatus: number) {
-  const ipOrgItems = await prisma.iP_ORG.findMany({
-    where: {
-      NOT: {
-        status: ipOrgStatus,
+export async function getIpOrgs(
+  prisma: PrismaClient,
+  ipOrgStatus: number,
+  iporg?: string
+) {
+  let ipOrgItems;
+  if (iporg) {
+    ipOrgItems = await prisma.ip_organization.findMany({
+      where: {
+        AND: {
+          NOT: {
+            status: ipOrgStatus,
+          },
+          id: iporg,
+        },
       },
-    },
-  });
+    });
+  } else {
+    ipOrgItems = await prisma.ip_organization.findMany({
+      where: {
+        NOT: {
+          status: ipOrgStatus,
+        },
+      },
+    });
+  }
   return ipOrgItems;
 }
 
@@ -18,7 +36,7 @@ export async function updateIPOrg(
   ipOrgId: string,
   updateFields: IPOrgUpdateFields
 ) {
-  const ipOrgItem = await prisma.iP_ORG.update({
+  const ipOrgItem = await prisma.ip_organization.update({
     where: {
       id: ipOrgId,
     },

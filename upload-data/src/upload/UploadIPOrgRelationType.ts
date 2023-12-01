@@ -28,7 +28,7 @@ export class UploadIPOrgRelationType {
     this.client = client;
   }
 
-  public async upload(): Promise<UploadTotal> {
+  public async upload(iporg?: string): Promise<UploadTotal> {
     const result: UploadTotal = {
       newItem: 0,
       sendingItem: 0,
@@ -36,7 +36,7 @@ export class UploadIPOrgRelationType {
       failedItem: 0,
     };
 
-    const ipOrgRelationTypes = await this.getIPOrgRelationTypes();
+    const ipOrgRelationTypes = await this.getIPOrgRelationTypes(iporg);
     if (ipOrgRelationTypes.length == 0) {
       fileLogger.info("No ipOrg relation types to upload.");
       return result;
@@ -44,31 +44,33 @@ export class UploadIPOrgRelationType {
 
     try {
       for (const ipOrgRelationType of ipOrgRelationTypes) {
+        fileLogger.info(
+          `handling ipOrgRelationType: ${JSON.stringify(ipOrgRelationType)}`
+        );
         switch (ipOrgRelationType.status) {
           case IP_ORG_RELATION_TYPE_STATUS.CREATED:
-            this.uploadIPOrgRelationType(ipOrgRelationType);
+            await this.uploadIPOrgRelationType(ipOrgRelationType);
             result.newItem++;
             break;
           case IP_ORG_RELATION_TYPE_STATUS.FAILED:
-            this.uploadIPOrgRelationType(ipOrgRelationType);
+            // TODO
             result.failedItem++;
             break;
           case IP_ORG_RELATION_TYPE_STATUS.SENDING:
-            this.handleSendingIPOrgRelationTypeItem(ipOrgRelationType);
+            await this.handleSendingIPOrgRelationTypeItem(ipOrgRelationType);
             result.sendingItem++;
             break;
           case IP_ORG_RELATION_TYPE_STATUS.SENT:
-            this.handleSentIPOrgRelationTypeItem(ipOrgRelationType);
+            await this.handleSentIPOrgRelationTypeItem(ipOrgRelationType);
             result.sentItem++;
             break;
           default:
             fileLogger.warn(`Invalid ipOrg status ${ipOrgRelationType.status}`);
         }
       }
+      return result;
     } catch (e) {
       throw e;
-    } finally {
-      return result;
     }
   }
 
@@ -78,10 +80,11 @@ export class UploadIPOrgRelationType {
     }
   }
 
-  private async getIPOrgRelationTypes() {
+  private async getIPOrgRelationTypes(iporg?: string) {
     const ipOrgRelationTypes = await getIPOrgRelationTypes(
       this.prisma,
-      IP_ORG_RELATION_TYPE_STATUS.FINISHED
+      IP_ORG_RELATION_TYPE_STATUS.FINISHED,
+      iporg
     );
     fileLogger.info(
       `Fund ${ipOrgRelationTypes.length} ip_org relationship types.`

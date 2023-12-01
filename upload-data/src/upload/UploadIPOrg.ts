@@ -7,10 +7,7 @@ import { fileLogger } from "../utils/WLogger";
 import { IPOrgItem } from "../interfaces/IIPOrg";
 import { StoryProtocolKit } from "../components/StoryProtocolKit";
 import { UploadTotal } from "../interfaces/IBase";
-import {
-  DefaultRegisterIPOrgParams,
-  IPOrgUpdateFields,
-} from "../interfaces/IIPOrg";
+import { IPOrgUpdateFields } from "../interfaces/IIPOrg";
 
 export const IP_ORG_STATUS = {
   CREATED: 0,
@@ -23,14 +20,16 @@ export const IP_ORG_STATUS = {
 export class UploadIPOrg {
   public prisma: PrismaClient;
   public client: Client;
+  public clientAddress: string;
 
-  constructor(client: Client) {
+  constructor(client: Client, clientAddress: string) {
     this.prisma = new PrismaClient();
     this.client = client;
+    this.clientAddress = clientAddress;
   }
 
-  public async upload(): Promise<UploadTotal> {
-    const ipOrgs = await this.getIPOrgs();
+  public async upload(iporg?: string): Promise<UploadTotal> {
+    const ipOrgs = await this.getIPOrgs(iporg);
     const result: UploadTotal = {
       newItem: 0,
       sendingItem: 0,
@@ -43,31 +42,39 @@ export class UploadIPOrg {
     }
     try {
       for (const ipOrg of ipOrgs) {
+        const ipOrgItem: IPOrgItem = {
+          ...ipOrg,
+          owner: ipOrg.owner || undefined,
+          ip_asset_types:
+            ipOrg.ip_asset_types.length > 0
+              ? JSON.parse(ipOrg.ip_asset_types)
+              : ["1", "2", "3", "4", "5", "6"],
+        };
+        fileLogger.info(`handling ipOrgItem: ${JSON.stringify(ipOrgItem)}`);
         switch (ipOrg.status) {
           case IP_ORG_STATUS.CREATED:
-            this.uploadIPOrgItem(ipOrg);
+            await this.uploadIPOrgItem(ipOrgItem);
             result.newItem++;
             break;
           case IP_ORG_STATUS.FAILED:
-            this.uploadIPOrgItem(ipOrg);
+            // TODO
             result.failedItem++;
             break;
           case IP_ORG_STATUS.SENDING:
-            this.handleSendingIPOrgItem(ipOrg);
+            await this.handleSendingIPOrgItem(ipOrgItem);
             result.sendingItem++;
             break;
           case IP_ORG_STATUS.SENT:
-            this.handleSentIPOrgItem(ipOrg);
+            await this.handleSentIPOrgItem(ipOrgItem);
             result.sentItem++;
             break;
           default:
             fileLogger.warn(`Invalid ipOrg status ${ipOrg.status}`);
         }
       }
+      return result;
     } catch (e) {
       throw e;
-    } finally {
-      return result;
     }
   }
 
@@ -77,8 +84,8 @@ export class UploadIPOrg {
     }
   }
 
-  private async getIPOrgs() {
-    const ipOrgs = await getIpOrgs(this.prisma, IP_ORG_STATUS.FINISHED);
+  private async getIPOrgs(iporg?: string) {
+    const ipOrgs = await getIpOrgs(this.prisma, IP_ORG_STATUS.FINISHED, iporg);
     fileLogger.info(`Fund ${ipOrgs.length} ipOrgs.`);
     return ipOrgs;
   }
@@ -91,15 +98,16 @@ export class UploadIPOrg {
       });
 
       txResult = await StoryProtocolKit.createIPOrg(this.client, {
-        ...DefaultRegisterIPOrgParams,
         name: item.name,
         symbol: item.symbol,
-        owner: item.owner,
+        owner: item.owner || this.clientAddress,
+        assetTypes: item.ip_asset_types,
       });
 
       await updateIPOrg(this.prisma, item.id, {
         org_address: txResult.ipOrgId,
         tx_hash: txResult.txHash,
+        owner: this.clientAddress,
         status: IP_ORG_STATUS.FINISHED,
       });
     } catch (e) {
@@ -112,6 +120,7 @@ export class UploadIPOrg {
       if (txResult && txResult.ipOrgId) {
         uploadFields.org_address = txResult.ipOrgId;
         uploadFields.tx_hash = txResult.txHash;
+        uploadFields.owner = this.clientAddress;
         uploadFields.status = IP_ORG_STATUS.SENT;
       }
       await updateIPOrg(this.prisma, item.id, uploadFields);

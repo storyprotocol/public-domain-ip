@@ -9,5 +9,5 @@ export type UploadTotal = {
 
 export interface BaseUpdateFields {
   tx_hash?: string;
-  status: number;
+  status?: number;
 }

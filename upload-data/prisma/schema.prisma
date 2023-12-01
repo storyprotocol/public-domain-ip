@@ -11,51 +11,36 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model IP_ORG {
+model ip_organization {
   id  String @id @default(uuid())
   name String 
   symbol String
-  owner String
+  owner String?
+  ip_asset_types String
   org_address String?
   tx_hash String?
   status  Int
 }
 
-model IP_ORG_RELATION_TYPE{
+model relationship_type {
   id  String @id @default(uuid())
-  ip_org_id String
-  relationship_type String
-  related_src Int
-  related_dst Int
-  allowed_srcs String?
-  allowed_dsts String?
   tx_hash String?
   status Int
 }
 
-model IP_ASSET{
+model ip_asset{
   id  String @id @default(uuid())
-  ip_org_id String
-  type Int
-  name String
-  ip_hash String
-  url String?
-  owner String
+  ip_hash String?
+  owner String?
+  metadata_url String?
+  metadata_raw String?
   asset_seq_id String?
   tx_hash String?
   status Int
 }
 
-model RELATIONSHIP{
+model relationship{
   id  String @id @default(uuid())
-  ip_org_id String
-  relationship_type String
-  src_address String
-  src_id String
-  src_type String
-  dst_address String
-  dst_id String
-  dst_type String
   relationship_seq_id String?
   tx_hash String?
   status Int

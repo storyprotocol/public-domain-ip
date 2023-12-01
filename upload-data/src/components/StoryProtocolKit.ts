@@ -98,10 +98,8 @@ export class StoryProtocolKit {
       relType: item.relType,
       srcContract: item.srcAddress,
       srcTokenId: item.srcId,
-      srcType: item.srcType,
       dstContract: item.dstAddress,
       dstTokenId: item.dstId,
-      dstType: item.dstType,
       preHookData: [],
       postHookData: [],
       txOptions: {

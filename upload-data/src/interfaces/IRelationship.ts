@@ -16,11 +16,11 @@ export const DefaultRegisterIPOrgRelationTypeParams: RegisterIPOrgRelationTypePa
     relType: "",
     ipOrg: "",
     allowedElements: {
-      src: 0,
-      dst: 0,
+      src: 1,
+      dst: 1,
     },
-    allowedSrcs: [],
-    allowedDsts: [],
+    allowedSrcs: ["1"],
+    allowedDsts: ["1"],
   };
 
 export interface RelationshipParams {
@@ -28,15 +28,13 @@ export interface RelationshipParams {
   relType: string;
   srcAddress: string;
   srcId: string;
-  srcType: string;
   dstAddress: string;
   dstId: string;
-  dstType: string;
 }
 
 export interface IPOrgRelationTypeItem {
   id: string;
-  ip_org_id: string;
+  ip_organization_id: string;
   org_address?: string;
   relationship_type: string;
   related_src: number;
@@ -49,18 +47,14 @@ export interface IPOrgRelationTypeItem {
 
 export interface RelationshipItem {
   id: string;
-  ip_org_id: string;
+  ip_organization_id: string;
   org_address?: string;
   relationship_type: string;
-  src_address: string;
-  src_id: string;
-  src_type: string;
-  dst_address: string;
-  dst_id: string;
-  dst_type: string;
-  relationship_seq_id?: number | null;
-  src_asset_id?: string | null;
-  dst_asset_id?: string | null;
+  src_asset_seq_id?: string;
+  src_asset_id: string;
+  dst_asset_seq_id?: string;
+  dst_asset_id: string;
+  relationship_seq_id?: string | null;
   tx_hash?: string | null;
   status: number;
 }
