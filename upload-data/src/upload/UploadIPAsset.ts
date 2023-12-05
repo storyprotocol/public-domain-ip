@@ -50,15 +50,19 @@ export class UploadIPAsset {
         switch (ipAsset.status) {
           case IP_ASSET_STATUS.CREATED:
             await this.uploadIPAsset(ipAsset);
+            result.newItem++;
             break;
           case IP_ASSET_STATUS.FAILED:
+            result.failedItem++;
             // TODO
             break;
           case IP_ASSET_STATUS.SENDING:
             await this.handleIPAssetSendingItem(ipAsset);
+            result.sendingItem++;
             break;
           case IP_ASSET_STATUS.SENT:
             await this.handleIPAssetSentItem(ipAsset);
+            result.sentItem++;
             break;
           default:
             fileLogger.warn(`Invalid IP asset status ${ipAsset.status}`);
@@ -89,7 +93,7 @@ export class UploadIPAsset {
   private async uploadIPAsset(item: IPAssetItem) {
     if (!item.org_address) {
       fileLogger.error(`org_address is null: ${JSON.stringify(item)}}`);
-      return;
+      throw new Error(`org_address is null: ${JSON.stringify(item)}}`);
     }
 
     let uploadResult: { uri: string; hash: string } | undefined;

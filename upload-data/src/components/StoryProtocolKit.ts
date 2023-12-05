@@ -64,7 +64,7 @@ export class StoryProtocolKit {
         waitForTransaction: true,
       },
     };
-    return client.relationship.registerRelationshipType(params);
+    return client.relationshipType.register(params);
   }
 
   public static createIPAsset(

@@ -8,12 +8,11 @@
   "scripts": {
     "start": "node dist/src/index.js",
     "dev": "ts-node src/index.ts",
-    "build": "tsc",
-    "test": "jest dist/test"
+    "build": "tsc"
   },
   "dependencies": {
     "@prisma/client": "5.6.0",
-    "@story-protocol/core-sdk": "^0.1.0-alpha-rc.2",
+    "@story-protocol/core-sdk": "^0.1.0-alpha-rc.3",
     "@types/node": "^20.9.5",
     "dotenv": "^16.3.1",
     "prisma": "^5.6.0",

@@ -626,10 +626,10 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@story-protocol/core-sdk@^0.1.0-alpha-rc.2":
-  version "0.1.0-alpha-rc.2"
-  resolved "https://registry.yarnpkg.com/@story-protocol/core-sdk/-/core-sdk-0.1.0-alpha-rc.2.tgz#e739515474fce1f4b147cf66acdae8ff6c22a336"
-  integrity sha512-oojDvAruP84WxxdrulBXgaxIuqWvnFFd3X4lDRYfbQpM9Vt5ZxgIyr7epQpZ9v6cxk/ZWUdPZOHVOp/KF+5qKw==
+"@story-protocol/core-sdk@^0.1.0-alpha-rc.3":
+  version "0.1.0-alpha-rc.3"
+  resolved "https://registry.yarnpkg.com/@story-protocol/core-sdk/-/core-sdk-0.1.0-alpha-rc.3.tgz#e927d7864f58f13c74fbd8e5d47b1b2ca9035062"
+  integrity sha512-FjrLLoBlWcaDBGrdsBGFre/e3XwNuMy1D+q77taqPmhHaqiEq3/ISkSD6AqzSW3reSCXsEvLm/6hPpFxl4SDCg==
   dependencies:
     abitype "^0.10.2"
     axios "^1.5.1"
@@ -2432,9 +2432,9 @@ v8-to-istanbul@^9.0.1:
     convert-source-map "^2.0.0"
 
 viem@^1.18.4:
-  version "1.19.9"
-  resolved "https://registry.yarnpkg.com/viem/-/viem-1.19.9.tgz#a11f3ad4a3323994ebd2010dbc659d1a2b12e583"
-  integrity sha512-Sf9U2x4jU0S/FALqYypcspWOGene0NZyD470oUripNhE0Ta6uOE/OgE4toTDVfRxov8qw0JFinr/wPGxYE3+HQ==
+  version "1.19.11"
+  resolved "https://registry.yarnpkg.com/viem/-/viem-1.19.11.tgz#de4ee7537ee036894bd818aa316a8faecaf017e9"
+  integrity sha512-dbsXEWDBZkByuzJXAs/e01j7dpUJ5ICF5WcyntFwf8Y97n5vnC/91lAleSa6DA5V4WJvYZbhDpYeTctsMAQnhA==
   dependencies:
     "@adraffy/ens-normalize" "1.10.0"
     "@noble/curves" "1.2.0"

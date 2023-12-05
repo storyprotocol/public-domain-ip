@@ -95,7 +95,7 @@ export class UploadIPOrgRelationType {
   private async uploadIPOrgRelationType(item: IPOrgRelationTypeItem) {
     if (!item.org_address) {
       fileLogger.error(`org_address is null: ${JSON.stringify(item)}}`);
-      return;
+      throw new Error(`org_address is null: ${JSON.stringify(item)}}`);
     }
     let txResult: RegisterRelationshipTypeResponse | undefined;
     try {

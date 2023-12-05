@@ -101,7 +101,6 @@ export class UploadRelationship {
         )}}`
       );
     }
-
     if (!item.org_address) {
       throw new Error(`org_address is null: ${JSON.stringify(item)}}`);
     }

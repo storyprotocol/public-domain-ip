@@ -46,11 +46,11 @@ async function uploadByIPORG(
   uploadIPAsset: UploadIPAsset,
   uploadRelationship: UploadRelationship
 ) {
-  if (!process.env.IPORGS) {
-    fileLogger.error("IPORGS is not set");
-    throw new Error("IPORGS is not set");
+  if (!process.env.IP_ORGS) {
+    fileLogger.error("IP_ORGS is not set");
+    throw new Error("IP_ORGS is not set");
   }
-  const iporgs = process.env.IPORGS.split(",");
+  const iporgs = process.env.IP_ORGS.split(",");
   fileLogger.info(`iporgs (${iporgs.length}) : ${JSON.stringify(iporgs)}`);
   for (const iporg of iporgs) {
     fileLogger.info(`Start handling iporg: ${iporg}`);
@@ -110,7 +110,7 @@ async function main() {
   const uploadIPAsset = new UploadIPAsset(client, clientAddress);
   const uploadRelationship = new UploadRelationship(client);
   try {
-    if (process.env.IPORGS) {
+    if (process.env.IP_ORGS) {
       await uploadByIPORG(
         uploadIPOrg,
         uploadIPOrgRelationType,

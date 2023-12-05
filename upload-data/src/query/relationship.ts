@@ -10,7 +10,7 @@ export async function getRelationships(
   iporg?: string
 ) {
   let finalSql;
-  if (process.env.IPORGS) {
+  if (iporg) {
     finalSql = Prisma.sql`select r.id, r.ip_organization_id, ipo.org_address,relationship_type,src_asset_id,(select asset_seq_id from ip_asset where id = r.src_asset_id) as src_asset_seq_id, dst_asset_id,(select asset_seq_id from ip_asset where id = r.dst_asset_id) as dst_asset_seq_id,relationship_seq_id,r.tx_hash,r.status from relationship r inner join ip_organization ipo on r.ip_organization_id = ipo.id where r.status != ${ipOrgStatus} and ipo.id = ${iporg}`;
   } else {
     finalSql = Prisma.sql`select r.id, r.ip_organization_id, ipo.org_address,relationship_type,src_asset_id,(select asset_seq_id from ip_asset where id = r.src_asset_id) as src_asset_seq_id, dst_asset_id,(select asset_seq_id from ip_asset where id = r.dst_asset_id) as dst_asset_seq_id,relationship_seq_id,r.tx_hash,r.status from relationship r inner join ip_organization ipo on r.ip_organization_id = ipo.id where r.status != ${ipOrgStatus}`;
