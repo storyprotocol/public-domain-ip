@@ -9,7 +9,7 @@ class CsvReader:
 
     @staticmethod
     def is_header_valid(header_row):
-        return ['title', 'author', 'url', 'type', 'params', 'series'] == header_row
+        return ['title', 'author', 'url', 'type', 'params', 'series', 'nlp_option'] == header_row
 
     def get_series(self, row):
         clo_five = self.get_value_from_line(row, 5, '')
@@ -22,6 +22,12 @@ class CsvReader:
         if clo_five.upper() in ('FALSE', 'TRUE'):
             return clo_five.upper() == 'TRUE'
         return False
+    
+    def get_nlp_option(self, row):
+        clo_six = self.get_value_from_line(row, 6, '')
+        if clo_six.upper() in ('CHAPTER', 'SERIES'):
+            return clo_six.upper()
+        return 'BOOK'
 
     @staticmethod
     def get_value_from_line(row, index, default=None):
@@ -47,7 +53,7 @@ class CsvReader:
                         'type': row[3],
                         'params': self.get_value_from_line(row, 4, ''),
                         'series': self.get_series(row),
-                        'divide_chapter': self.get_divide_chapter(row)
+                        'nlp_option': self.get_nlp_option(row)
                     })
                 except IndexError:
                     raise CsvFormatError(f'CSV file row : {row} is incorrect.')

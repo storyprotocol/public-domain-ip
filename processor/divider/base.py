@@ -1,5 +1,6 @@
 import abc
 import re
+import time
 from functools import cached_property
 
 import requests
@@ -10,18 +11,25 @@ from divider.utils import clean_content, get_worlds
 
 
 class BaseDivider(metaclass=abc.ABCMeta):
-    START_TAG_ID = 'pg-header'
-    END_TAG_ID = 'pg-footer'
+    START_TAG_ID = "pg-header"
+    END_TAG_ID = "pg-footer"
 
-    def __init__(self, url=None, embedded=False, chapter_class='chapter'):
+    def __init__(self, url=None, embedded=False, chapter_class="chapter"):
         self.embedded = embedded
         self.chapter_class = chapter_class
         self.url = url
 
     @cached_property
     def soup(self):
+        # sleep 3 seconds to avoid 403
+        time.sleep(3)
         response = requests.get(self.url)
-        return BeautifulSoup(response.text.replace("<br>", SPACE_STR).replace('<br/>', SPACE_STR), 'html.parser')
+        if response.status_code != 200:
+            raise Exception(f"Failed to get {self.url}")
+        return BeautifulSoup(
+            response.text.replace("<br>", SPACE_STR).replace("<br/>", SPACE_STR),
+            "html.parser",
+        )
 
     def get_start_tag(self):
         start_section = self.soup.find(id=re.compile(self.START_TAG_ID, re.IGNORECASE))
@@ -30,26 +38,22 @@ class BaseDivider(metaclass=abc.ABCMeta):
     @staticmethod
     def get_text_from_tag(tag):
         # Text description of the illustration
-        if tag.parent.get('class') and 'caption' in tag.parent.get('class'):
-            return ''
+        if tag.parent.get("class") and "caption" in tag.parent.get("class"):
+            return ""
 
-        if tag.name not in ('p', 'span', 'i', 'pre'):
-            return ''
+        if tag.name not in ("p", "span", "i", "pre"):
+            return ""
 
-        if tag.parent.name in ('p', 'span', 'i', 'pre', 'td'):
-            return ''
+        if tag.parent.name in ("p", "span", "i", "pre", "td"):
+            return ""
         return clean_content(tag.get_text())
 
     @staticmethod
     def generate_chapter_response(content: str, title: str):
-        return {
-            'title': title,
-            'content': content,
-            'words': get_worlds(content)
-        }
+        return {"title": title, "content": content, "words": get_worlds(content)}
 
     def is_end(self, tag):
-        return tag and tag.get('id') == self.END_TAG_ID
+        return tag and tag.get("id") == self.END_TAG_ID
 
     @abc.abstractmethod
     def divide(self):
@@ -57,7 +61,6 @@ class BaseDivider(metaclass=abc.ABCMeta):
 
 
 class BaseChapter(metaclass=abc.ABCMeta):
-
     def __init__(self, soup):
         self.soup = soup
 

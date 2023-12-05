@@ -7,14 +7,14 @@ from character_extractor.utils import lazy_load_spacy_nlp, lazy_load_booknlp
 
 
 class BaseParser:
-    def __init__(self, chapters, run_npl_divide_chapter):
+    def __init__(self, chapters, nlp_option):
         self.chapters = chapters
-        self.run_npl_divide_chapter = run_npl_divide_chapter
+        self.nlp_option = nlp_option
 
     @staticmethod
     def clean_text(text: str):
         ret = text.replace("\n", " ")
-        if ret.startswith("the ") or ret.startswith('The '):
+        if ret.startswith("the ") or ret.startswith("The "):
             ret = ret[4:]
         return ret
 
@@ -39,7 +39,9 @@ class SpacyParser(BaseParser):
             count_map = defaultdict(int)
             for label_value in label_values:
                 count_map[label_value] += 1
-            result[label] = OrderedDict(sorted(count_map.items(), key=lambda x: x[1], reverse=True))
+            result[label] = OrderedDict(
+                sorted(count_map.items(), key=lambda x: x[1], reverse=True)
+            )
         return result
 
     @staticmethod
@@ -50,21 +52,40 @@ class SpacyParser(BaseParser):
 
     def parse(self):
         ret = []
-        if self.run_npl_divide_chapter:
+        if self.nlp_option == "CHAPTER":
             for chapter in self.chapters:
                 docs = self.run_nlp([chapter.content])
-                ret.append({
-                    'chapter_id': chapter.id,
-                    'result': self.clean_result(docs)
-                })
+                ret.append(
+                    {
+                        "book_id": None,
+                        "chapter_id": chapter.id,
+                        "result": self.clean_result(docs),
+                    }
+                )
             return ret
-
-        docs = self.run_nlp(self.contents)
-        return [{'chapter_id': '', 'result': self.clean_result(docs)}]
+        elif self.nlp_option == "BOOK":
+            book_chapter_dict = defaultdict(list)
+            for chapter in self.chapters:
+                book_chapter_dict[chapter.book_id].append(chapter.content)
+            for bookid, contents in book_chapter_dict.items():
+                docs = self.run_nlp(self.contents)
+                ret.append(
+                    {
+                        "book_id": bookid,
+                        "chapter_id": None,
+                        "result": self.clean_result(docs),
+                    }
+                )
+            return ret
+        elif self.nlp_option == "SERIES":
+            docs = self.run_nlp(self.contents)
+            return [
+                {"book_id": None, "chapter_id": None, "result": self.clean_result(docs)}
+            ]
 
 
 class NlpbookParser(BaseParser):
-    book_id = 'book_nlp_id'
+    book_id = "book_nlp_id"
 
     @staticmethod
     def create_tem_file():
@@ -78,10 +99,7 @@ class NlpbookParser(BaseParser):
 
     def run_nlp(self, content):
         book_nlp = lazy_load_booknlp()
-        model_params = {
-            "pipeline": "entity,quote,coref",
-            "model": "small"
-        }
+        model_params = {"pipeline": "entity,quote,coref", "model": "small"}
         booknlp = book_nlp("en", model_params)
         tem_file = self.create_tem_file()
         tem_file.write(content.encode())
@@ -95,30 +113,54 @@ class NlpbookParser(BaseParser):
 
     def get_data_from_json_file(self, result_folder):
         result = defaultdict(int)
-        file_path = os.path.join(result_folder.name, self.book_id + '.book')
+        file_path = os.path.join(result_folder.name, self.book_id + ".book")
         with open(file_path) as f:
             data = json.load(f)
             for item in data["characters"]:
                 try:
-                    name = item["mentions"]['proper'][0]["n"]
+                    name = item["mentions"]["proper"][0]["n"]
                 except IndexError:
                     continue
                 name = self.clean_text(name)
                 result[name] += item["count"]
         result_folder.cleanup()
         result = OrderedDict(sorted(result.items(), key=lambda x: x[1], reverse=True))
-        return {'PERSON': result}
+        return {"PERSON": result}
 
     def parse(self):
-        if self.run_npl_divide_chapter:
-            ret = []
+        ret = []
+        if self.nlp_option == "CHAPTER":
             for chapter in self.chapters:
                 result_folder = self.run_nlp(chapter.content)
-                ret.append({
-                    'chapter_id': chapter.id,
-                    'result': self.get_data_from_json_file(result_folder)
-                })
+                ret.append(
+                    {
+                        "book_id": chapter.book_id,
+                        "chapter_id": chapter.id,
+                        "result": self.get_data_from_json_file(result_folder),
+                    }
+                )
             return ret
+        elif self.nlp_option == "BOOK":
+            book_chapter_dict = defaultdict(list)
+            for chapter in self.chapters:
+                book_chapter_dict[chapter.book_id].append(chapter.content)
 
-        result_folder = self.run_nlp(' '.join(self.contents))
-        return [{'chapter_id': '', 'result': self.get_data_from_json_file(result_folder)}]
+            for bookid, contents in book_chapter_dict.items():
+                result_folder = self.run_nlp(" ".join(contents))
+                ret.append(
+                    {
+                        "book_id": bookid,
+                        "chapter_id": None,
+                        "result": self.get_data_from_json_file(result_folder),
+                    }
+                )
+            return ret
+        elif self.nlp_option == "SERIES":
+            result_folder = self.run_nlp(" ".join(self.contents))
+            return [
+                {
+                    "book_id": None,
+                    "chapter_id": None,
+                    "result": self.get_data_from_json_file(result_folder),
+                }
+            ]
