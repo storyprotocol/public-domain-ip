@@ -626,10 +626,10 @@
   dependencies:
     "@sinonjs/commons" "^3.0.0"
 
-"@story-protocol/core-sdk@^0.1.0-alpha-rc.3":
-  version "0.1.0-alpha-rc.3"
-  resolved "https://registry.yarnpkg.com/@story-protocol/core-sdk/-/core-sdk-0.1.0-alpha-rc.3.tgz#e927d7864f58f13c74fbd8e5d47b1b2ca9035062"
-  integrity sha512-FjrLLoBlWcaDBGrdsBGFre/e3XwNuMy1D+q77taqPmhHaqiEq3/ISkSD6AqzSW3reSCXsEvLm/6hPpFxl4SDCg==
+"@story-protocol/core-sdk@^0.1.0-alpha-rc.5":
+  version "0.1.0-alpha-rc.5"
+  resolved "https://registry.yarnpkg.com/@story-protocol/core-sdk/-/core-sdk-0.1.0-alpha-rc.5.tgz#fcab7f6a56121a6d3f06478818fb8fb24f938d06"
+  integrity sha512-S1I0jxlSUOWyOX5xSdknGbPuuB12caO7giOIsVCgJt5yYhvUAM8oALRmKaPGeoGpRt+O9REnYCH8CATok/dU6Q==
   dependencies:
     abitype "^0.10.2"
     axios "^1.5.1"

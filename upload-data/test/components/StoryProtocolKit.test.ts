@@ -57,8 +57,8 @@ describe("StoryProtocolKit", () => {
         src: 1,
         dst: 1,
       },
-      allowedSrcs: ["1"],
-      allowedDsts: ["1"],
+      allowedSrcs: [1],
+      allowedDsts: [1],
     };
     const result = StoryProtocolKit.createIPOrgRelationType(
       client,
@@ -76,8 +76,8 @@ describe("StoryProtocolKit", () => {
         src: 1,
         dst: 1,
       },
-      allowedSrcs: ["1"],
-      allowedDsts: ["1"],
+      allowedSrcs: [1],
+      allowedDsts: [1],
     };
 
     expect(() =>

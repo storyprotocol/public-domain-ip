@@ -56,8 +56,8 @@ export class StoryProtocolKit {
         src: item.allowedElements.src,
         dst: item.allowedElements.dst,
       },
-      allowedSrcs: item.allowedSrcs,
-      allowedDsts: item.allowedDsts,
+      allowedSrcIpAssetTypes: item.allowedSrcs,
+      allowedDstIpAssetTypes: item.allowedDsts,
       preHooksConfig: [],
       postHooksConfig: [],
       txOptions: {
@@ -75,7 +75,7 @@ export class StoryProtocolKit {
     // const postHooksData: string[] = [];
     const params: CreateIpAssetRequest = {
       name: item.name,
-      type: item.ipAssetType,
+      typeIndex: item.ipAssetType,
       ipOrgId: item.orgAddress,
       owner: item.owner,
       mediaUrl: item.mediaUrl,

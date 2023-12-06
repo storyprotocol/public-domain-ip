@@ -7,8 +7,8 @@ export interface RegisterIPOrgRelationTypeParams {
     src: number;
     dst: number;
   };
-  allowedSrcs: string[];
-  allowedDsts: string[];
+  allowedSrcs: number[];
+  allowedDsts: number[];
 }
 
 export const DefaultRegisterIPOrgRelationTypeParams: RegisterIPOrgRelationTypeParams =
@@ -19,8 +19,8 @@ export const DefaultRegisterIPOrgRelationTypeParams: RegisterIPOrgRelationTypePa
       src: 1,
       dst: 1,
     },
-    allowedSrcs: ["1"],
-    allowedDsts: ["1"],
+    allowedSrcs: [1],
+    allowedDsts: [1],
   };
 
 export interface RelationshipParams {
