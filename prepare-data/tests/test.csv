@@ -1,4 +1,4 @@
-title,author,url,type,params,series
+title,author,url,type,params,series,nlp_option
 Grimms' Fairy Tales,Grimm,https://www.gutenberg.org/cache/epub/2591/pg2591-images.html,1,false,true
 Alice's Adventures in Wonderland,Lewis Carroll,https://www.gutenberg.org/cache/epub/11/pg11-images.html,1,false,
 Don Quixote,Miguel de Cervantes,https://www.gutenberg.org/cache/epub/996/pg996-images.html,1,false,

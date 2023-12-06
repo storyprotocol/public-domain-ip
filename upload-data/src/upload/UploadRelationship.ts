@@ -125,7 +125,7 @@ export class UploadRelationship {
         dstAddress: registryAddress,
         dstId: item.dst_asset_seq_id,
       });
-
+      
       await updateRelationship(this.prisma, item.id, {
         tx_hash: txResult.txHash,
         relationship_seq_id: txResult.relationshipId,

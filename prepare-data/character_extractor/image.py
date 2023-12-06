@@ -23,14 +23,15 @@ async def openai_generate_image(character: SeriesEntity, image_url):
     ret = await client.images.generate(
         response_format="b64_json",
         prompt=generate_image_msg(character.description),
-        model='dall-e-3',
-        quality='standard', size='1024x1024'
+        model="dall-e-3",
+        quality="standard",
+        size="1024x1024",
     )
 
     image_data = BytesIO(base64.b64decode(ret.data[0].b64_json.encode()))
     image_data.seek(0)
     image = Image.open(image_data)
-    image = image.convert('RGB')
+    image = image.convert("RGB")
     image_path = f"{IMAGE_ROOT_FOLDER}/{image_url}"
     image.save(image_path, quality=95)
     SeriesEntity.update_url(character.id, image_url)
@@ -45,9 +46,14 @@ async def generate():
     tasks = []
     for character, series in characters:
         if character.image_url:
-            logger.info(f'{character.name} in {series.title} has precessed, skip it')
+            logger.info(f"{character.name} in {series.title} has precessed, skip it")
             continue
-        logger.info(f'generate image of {character.name} in {series.title}')
+        if character.description is None:
+            logger.info(
+                f"{character.name} in {series.title} has no description, skip it"
+            )
+            continue
+        logger.info(f"generate image of {character.name} in {series.title}")
         image_url = image_file_name(series.title, character.name)
         tasks.append(openai_generate_image(character, image_url))
         if len(tasks) == 1:
