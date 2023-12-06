@@ -1,0 +1,11 @@
+requests
+bs4==0.0.1
+rdflib==7.0.0
+sqlalchemy==2.0.23
+click==8.1.7
+spacy==3.7.2
+loguru==0.7.2
+openai
+coverage==7.3.2
+booknlp==1.0.7.1
+pillow==10.1.0
