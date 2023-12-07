@@ -45,7 +45,7 @@ export class UploadIPOrgRelationType {
     try {
       for (const ipOrgRelationType of ipOrgRelationTypes) {
         fileLogger.info(
-          `Uploading relation type item : ${JSON.stringify(ipOrgRelationType)}`
+          `Handling relation type item : ${JSON.stringify(ipOrgRelationType)}`
         );
         switch (ipOrgRelationType.status) {
           case IP_ORG_RELATION_TYPE_STATUS.CREATED:
@@ -65,7 +65,9 @@ export class UploadIPOrgRelationType {
             result.sentItem++;
             break;
           default:
-            fileLogger.warn(`The status of the relationship type is not valid: ${ipOrgRelationType.status}`);
+            fileLogger.warn(
+              `The status of the relationship type is not valid: ${ipOrgRelationType.status}`
+            );
         }
       }
       return result;
@@ -86,16 +88,22 @@ export class UploadIPOrgRelationType {
       IP_ORG_RELATION_TYPE_STATUS.FINISHED,
       iporg
     );
-    fileLogger.info(
-      `Found ${ipOrgRelationTypes.length} relationship type(s).`
-    );
+    fileLogger.info(`Found ${ipOrgRelationTypes.length} relationship type(s).`);
     return ipOrgRelationTypes;
   }
 
   private async uploadIPOrgRelationType(item: IPOrgRelationTypeItem) {
     if (!item.org_address) {
-      fileLogger.error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
-      throw new Error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
+      fileLogger.error(
+        `The org_address field is absent or not provided: ${JSON.stringify(
+          item
+        )}}`
+      );
+      throw new Error(
+        `The org_address field is absent or not provided: ${JSON.stringify(
+          item
+        )}}`
+      );
     }
     let txResult: RegisterRelationshipTypeResponse | undefined;
     try {
@@ -136,9 +144,7 @@ export class UploadIPOrgRelationType {
     }
   }
 
-  private async handleFailedIPOrgRelationTypeItem(
-    item: IPOrgRelationTypeItem
-  ) {
+  private async handleFailedIPOrgRelationTypeItem(item: IPOrgRelationTypeItem) {
     // TODO: handleFailedIPOrgRelationTypeItem
   }
   private async handleSendingIPOrgRelationTypeItem(

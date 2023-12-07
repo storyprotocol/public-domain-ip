@@ -45,7 +45,7 @@ export class UploadRelationship {
     try {
       for (const relationship of relationships) {
         fileLogger.info(
-          `Uploading relationship item: ${JSON.stringify(relationship)}`
+          `Handling relationship item: ${JSON.stringify(relationship)}`
         );
         switch (relationship.status) {
           case RELATIONSHIP_STATUS.CREATED:
@@ -102,12 +102,18 @@ export class UploadRelationship {
       );
     }
     if (!item.org_address) {
-      throw new Error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
+      throw new Error(
+        `The org_address field is absent or not provided: ${JSON.stringify(
+          item
+        )}}`
+      );
     }
 
     if (!item.src_asset_seq_id || !item.dst_asset_seq_id) {
       throw new Error(
-        `The src_asset_seq_id or dst_asset_seq_id field is absent or not provided: ${JSON.stringify(item)}}`
+        `The src_asset_seq_id or dst_asset_seq_id field is absent or not provided: ${JSON.stringify(
+          item
+        )}}`
       );
     }
     let txResult: RegisterRelationshipResponse | undefined;
@@ -125,7 +131,7 @@ export class UploadRelationship {
         dstAddress: registryAddress,
         dstId: item.dst_asset_seq_id,
       });
-      
+
       await updateRelationship(this.prisma, item.id, {
         tx_hash: txResult.txHash,
         relationship_seq_id: txResult.relationshipId,

@@ -50,7 +50,7 @@ export class UploadIPOrg {
               ? JSON.parse(ipOrg.ip_asset_types)
               : ["1", "2", "3", "4", "5", "6"],
         };
-        fileLogger.info(`Uploading IP org item: ${JSON.stringify(ipOrgItem)}`);
+        fileLogger.info(`Handling IP org item: ${JSON.stringify(ipOrgItem)}`);
         switch (ipOrg.status) {
           case IP_ORG_STATUS.CREATED:
             await this.uploadIPOrgItem(ipOrgItem);
@@ -69,7 +69,9 @@ export class UploadIPOrg {
             result.sentItem++;
             break;
           default:
-            fileLogger.warn(`The status of the IP org is not valid: ${ipOrg.status}`);
+            fileLogger.warn(
+              `The status of the IP org is not valid: ${ipOrg.status}`
+            );
         }
       }
       return result;
@@ -84,7 +86,7 @@ export class UploadIPOrg {
     }
   }
 
-  private async getIPOrgs(iporg?: string) {
+  public async getIPOrgs(iporg?: string) {
     const ipOrgs = await getIpOrgs(this.prisma, IP_ORG_STATUS.FINISHED, iporg);
     fileLogger.info(`Found ${ipOrgs.length} ipOrg(s).`);
     return ipOrgs;
@@ -112,9 +114,9 @@ export class UploadIPOrg {
       });
     } catch (e) {
       fileLogger.error(
-        `Uploading the IP Org[${item.id}] was failed :${txResult?.txHash}:${JSON.stringify(
-          item
-        )} ${e}`
+        `Uploading the IP Org[${item.id}] was failed :${
+          txResult?.txHash
+        }:${JSON.stringify(item)} ${e}`
       );
       let uploadFields: IPOrgUpdateFields = { status: IP_ORG_STATUS.FAILED };
       if (txResult && txResult.ipOrgId) {

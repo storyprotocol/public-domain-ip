@@ -1,6 +1,5 @@
 import { PrismaClient } from "@prisma/client";
 import { IPOrgUpdateFields } from "../interfaces/IIPOrg";
-import { fileLogger } from "../utils/WLogger";
 
 export async function getIpOrgs(
   prisma: PrismaClient,
@@ -29,6 +28,10 @@ export async function getIpOrgs(
     });
   }
   return ipOrgItems;
+}
+
+export async function getAllIpOrgs(prisma: PrismaClient) {
+  return prisma.ip_organization.findMany();
 }
 
 export async function updateIPOrg(
