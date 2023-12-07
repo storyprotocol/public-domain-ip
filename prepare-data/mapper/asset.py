@@ -10,7 +10,7 @@ from mapper.constants import Asset_Type
 
 
 class AssetHandler:
-    default_ip_asset_types = json.dumps(["1", "2", "3", "4", "5", "6"])
+    default_ip_asset_types = json.dumps(["Story", "Book", "Chapter", "Character", "Item", "Art"])
 
     def __init__(self):
         self.ip_org = None
@@ -120,6 +120,9 @@ class AssetHandler:
 
     def config_character(self, characters):
         for series_obj, series_entity_obj, chapter_obj in characters:
+            if series_entity_obj.image_url is None:
+                logger.info(f"The character {series_entity_obj.name} in {series_obj.title} does not have image_url, skip it ")
+                continue
             character_ip_asset = self.__create_ip_asset(
                 series_entity_obj.name,
                 Asset_Type.CHARACTER.value,

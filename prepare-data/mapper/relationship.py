@@ -8,7 +8,7 @@ from mapper.constants import Relationship_Type
 
 
 class RelationshipHandler:
-    default_allowed_asset_types = json.dumps(["1"])
+    default_allowed_asset_types = json.dumps([1])
 
     def __init__(self, asset_handler):
         self.__asset_handler = asset_handler

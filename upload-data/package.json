@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@prisma/client": "5.6.0",
-    "@story-protocol/core-sdk": "^0.1.0-alpha-rc.5",
+    "@story-protocol/core-sdk": "^0.1.0-alpha-rc.6",
     "@types/node": "^20.9.5",
     "dotenv": "^16.3.1",
     "prisma": "^5.6.0",
