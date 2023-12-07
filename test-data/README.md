@@ -1,12 +1,39 @@
 # Test Data
 For test purpose, we prepare some test data from 10 books in the local database. 
+The user can import those data and validate the SDK functions
 
-## Database file
-The sqlite db file contains the book content and ip asset to be upload
-`local.db`
+## Database files
+The test database data are exported to csv file. 
+The raw files can be found in `raw` folder
 
+- book.csv
+- chapter.csv
+- series.csv
+- series_book.csv
+- series_entity.csv
+- series_ip.csv
+- ip_asset.csv
+- ip_organization.csv
+- relationship.csv
+- relationship_type.csv
+
+The sqlite databse file contains above data are in the file:
+`local_10books.db`
+
+## How to use raw data
+You can import to other sql database (eg. PostgreSQL) or local sqlite db.
+Please refer the command line tool in `prepare-data` to execute 4 steps
+- Change to `prepare-data` folder and setup the environment
+- Config the right database url in env `DATABASE_URL`
+- Create required tables with `python app.py init-db`
+- Load all data by `python app.py load-db-data -f ../test-data/raw/`
+
+
+## Image files
 The character images are in the folder
 `images`
+
+Please make sure the file name match with image_url in series_entity table if you want to rename them
 
 ## Book list
 - book-name: The Wonderful Wizard of Oz
@@ -41,8 +68,8 @@ The character images are in the folder
 
 We get all the chapters and 10 characters with description from each book and mapped them to ip organizations and assets. 
 In the test data we includes only 2 relationship type:  
-- APPEARS_IN     character -> APPEARS_IN -> book
-- GROUP_BY_BOOK  chapter -> GROUP_BY_BOOK -> book
+- APPEARS_IN     (e.g. character -> APPEARS_IN -> book)
+- GROUP_BY_BOOK  (e.g. chapter -> GROUP_BY_BOOK -> book)
 
 The relationships between assets are also created. 
 
@@ -52,9 +79,6 @@ Above data could be found in the following tables.
 - ip_asset
 - relationship_type
 - relationship
-
-The local database are in the sqlite file: `local.db`
-To test the image uploading workflow, we also provide the pre-generated character images in the folder: `images`
 
 Those test data can cover the 4 main function of uploading in the SDK.
 

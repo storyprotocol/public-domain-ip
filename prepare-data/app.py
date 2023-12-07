@@ -8,6 +8,7 @@ from character_extractor.main import parse_book
 from divider.main import divide_book
 from mapper.main import map_ip_asset
 from models.create_table import create_table
+from dataloader.loader import DataLoader
 
 
 @click.group()
@@ -44,6 +45,13 @@ def generate_image():
 @main.command()
 def map_ip():
     map_ip_asset()
+
+
+@main.command()
+@click.option("-f", "--file", type=str, help="input raw table data path", required=True)
+def load_db_data(file):
+    loader = DataLoader(file)
+    loader.load()
 
 
 if __name__ == '__main__':
