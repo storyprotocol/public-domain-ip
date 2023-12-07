@@ -38,14 +38,14 @@ export class UploadIPOrgRelationType {
 
     const ipOrgRelationTypes = await this.getIPOrgRelationTypes(iporg);
     if (ipOrgRelationTypes.length == 0) {
-      fileLogger.info("No ipOrg relation types to upload.");
+      fileLogger.info("There are no relationship types requiring upload.");
       return result;
     }
 
     try {
       for (const ipOrgRelationType of ipOrgRelationTypes) {
         fileLogger.info(
-          `handling ipOrgRelationType: ${JSON.stringify(ipOrgRelationType)}`
+          `Uploading relation type item : ${JSON.stringify(ipOrgRelationType)}`
         );
         switch (ipOrgRelationType.status) {
           case IP_ORG_RELATION_TYPE_STATUS.CREATED:
@@ -53,7 +53,7 @@ export class UploadIPOrgRelationType {
             result.newItem++;
             break;
           case IP_ORG_RELATION_TYPE_STATUS.FAILED:
-            // TODO
+            await this.handleFailedIPOrgRelationTypeItem(ipOrgRelationType);
             result.failedItem++;
             break;
           case IP_ORG_RELATION_TYPE_STATUS.SENDING:
@@ -65,7 +65,7 @@ export class UploadIPOrgRelationType {
             result.sentItem++;
             break;
           default:
-            fileLogger.warn(`Invalid ipOrg status ${ipOrgRelationType.status}`);
+            fileLogger.warn(`The status of the relationship type is not valid: ${ipOrgRelationType.status}`);
         }
       }
       return result;
@@ -87,15 +87,15 @@ export class UploadIPOrgRelationType {
       iporg
     );
     fileLogger.info(
-      `Fund ${ipOrgRelationTypes.length} ip_org relationship types.`
+      `Found ${ipOrgRelationTypes.length} relationship type(s).`
     );
     return ipOrgRelationTypes;
   }
 
   private async uploadIPOrgRelationType(item: IPOrgRelationTypeItem) {
     if (!item.org_address) {
-      fileLogger.error(`org_address is null: ${JSON.stringify(item)}}`);
-      throw new Error(`org_address is null: ${JSON.stringify(item)}}`);
+      fileLogger.error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
+      throw new Error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
     }
     let txResult: RegisterRelationshipTypeResponse | undefined;
     try {
@@ -120,7 +120,7 @@ export class UploadIPOrgRelationType {
       });
     } catch (e) {
       fileLogger.error(
-        `Failed to upload ipOrg relationship type ${item.id}:${
+        `Uploading relationship type[${item.id}] was failed :${
           txResult?.txHash
         }:${JSON.stringify(item)} ${e}`
       );
@@ -136,6 +136,11 @@ export class UploadIPOrgRelationType {
     }
   }
 
+  private async handleFailedIPOrgRelationTypeItem(
+    item: IPOrgRelationTypeItem
+  ) {
+    // TODO: handleFailedIPOrgRelationTypeItem
+  }
   private async handleSendingIPOrgRelationTypeItem(
     item: IPOrgRelationTypeItem
   ) {
@@ -147,6 +152,8 @@ export class UploadIPOrgRelationType {
       await updateIPOrgRelationType(this.prisma, item.id, {
         status: IP_ORG_RELATION_TYPE_STATUS.FINISHED,
       });
+      return;
     }
+    // TODO
   }
 }

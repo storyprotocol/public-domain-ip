@@ -22,7 +22,7 @@ export class Uploader {
 
   public async uploadImage(fileLocation: string): Promise<string> {
     const finalLocation: string = process.env.IMAGE_PATH + fileLocation;
-    fileLogger.info(`Upload image: ${finalLocation}`);
+    fileLogger.info(`image location : ${finalLocation}`);
     const file = readFileSync(finalLocation);
     const { uri } = await this.client.platform.uploadFile(file, MimeType.image);
     return uri;

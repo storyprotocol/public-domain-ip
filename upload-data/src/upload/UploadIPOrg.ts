@@ -37,7 +37,7 @@ export class UploadIPOrg {
       failedItem: 0,
     };
     if (ipOrgs.length == 0) {
-      fileLogger.info("No ipOrgs to upload.");
+      fileLogger.info("There are no IP orgs requiring upload.");
       return result;
     }
     try {
@@ -50,14 +50,14 @@ export class UploadIPOrg {
               ? JSON.parse(ipOrg.ip_asset_types)
               : ["1", "2", "3", "4", "5", "6"],
         };
-        fileLogger.info(`handling ipOrgItem: ${JSON.stringify(ipOrgItem)}`);
+        fileLogger.info(`Uploading IP org item: ${JSON.stringify(ipOrgItem)}`);
         switch (ipOrg.status) {
           case IP_ORG_STATUS.CREATED:
             await this.uploadIPOrgItem(ipOrgItem);
             result.newItem++;
             break;
           case IP_ORG_STATUS.FAILED:
-            // TODO
+            await this.handleFailedIPOrgItem(ipOrgItem);
             result.failedItem++;
             break;
           case IP_ORG_STATUS.SENDING:
@@ -69,7 +69,7 @@ export class UploadIPOrg {
             result.sentItem++;
             break;
           default:
-            fileLogger.warn(`Invalid ipOrg status ${ipOrg.status}`);
+            fileLogger.warn(`The status of the IP org is not valid: ${ipOrg.status}`);
         }
       }
       return result;
@@ -86,7 +86,7 @@ export class UploadIPOrg {
 
   private async getIPOrgs(iporg?: string) {
     const ipOrgs = await getIpOrgs(this.prisma, IP_ORG_STATUS.FINISHED, iporg);
-    fileLogger.info(`Fund ${ipOrgs.length} ipOrgs.`);
+    fileLogger.info(`Found ${ipOrgs.length} ipOrg(s).`);
     return ipOrgs;
   }
 
@@ -112,7 +112,7 @@ export class UploadIPOrg {
       });
     } catch (e) {
       fileLogger.error(
-        `Failed to upload ipOrg ${item.id}:${txResult?.txHash}:${JSON.stringify(
+        `Uploading the IP Org[${item.id}] was failed :${txResult?.txHash}:${JSON.stringify(
           item
         )} ${e}`
       );
@@ -128,6 +128,10 @@ export class UploadIPOrg {
     }
   }
 
+  private async handleFailedIPOrgItem(item: IPOrgItem) {
+    // TODO: handleFailedIPOrgItem
+  }
+
   private async handleSendingIPOrgItem(item: IPOrgItem) {
     // TODO: handleSendingIPOrgItem
   }
@@ -137,6 +141,8 @@ export class UploadIPOrg {
       await updateIPOrg(this.prisma, item.id, {
         status: IP_ORG_STATUS.FINISHED,
       });
+      return;
     }
+    // TODO
   }
 }

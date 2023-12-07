@@ -41,20 +41,20 @@ export class UploadIPAsset {
 
     const ipAssets = await this.getIPAssets(iporg);
     if (ipAssets.length == 0) {
-      fileLogger.info("No ip asset need to upload.");
+      fileLogger.info("There are no IP assets requiring upload.");
       return result;
     }
     try {
       for (const ipAsset of ipAssets) {
-        fileLogger.info(`Upload ip asset: ${JSON.stringify(ipAsset)}`);
+        fileLogger.info(`Uploading IP asset item : ${JSON.stringify(ipAsset)}`);
         switch (ipAsset.status) {
           case IP_ASSET_STATUS.CREATED:
             await this.uploadIPAsset(ipAsset);
             result.newItem++;
             break;
           case IP_ASSET_STATUS.FAILED:
+            await this.handleIPAssetFailedItem(ipAsset);
             result.failedItem++;
-            // TODO
             break;
           case IP_ASSET_STATUS.SENDING:
             await this.handleIPAssetSendingItem(ipAsset);
@@ -65,7 +65,7 @@ export class UploadIPAsset {
             result.sentItem++;
             break;
           default:
-            fileLogger.warn(`Invalid IP asset status ${ipAsset.status}`);
+            fileLogger.warn(`The status of the IP asset is not valid: ${ipAsset.status}`);
         }
       }
       return result;
@@ -86,14 +86,14 @@ export class UploadIPAsset {
       IP_ASSET_STATUS.FINISHED,
       iporg
     );
-    fileLogger.info(`Fund ${ipAssets.length} IP assets.`);
+    fileLogger.info(`Found ${ipAssets.length} IP asset(s).`);
     return ipAssets;
   }
 
   private async uploadIPAsset(item: IPAssetItem) {
     if (!item.org_address) {
-      fileLogger.error(`org_address is null: ${JSON.stringify(item)}}`);
-      throw new Error(`org_address is null: ${JSON.stringify(item)}}`);
+      fileLogger.error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
+      throw new Error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
     }
 
     let uploadResult: { uri: string; hash: string } | undefined;
@@ -110,8 +110,8 @@ export class UploadIPAsset {
     // }
 
     if (!uri) {
-      fileLogger.error(`uri or hash is null: ${JSON.stringify(item)}}`);
-      throw new Error(`uri or hash is null: ${JSON.stringify(item)}}`);
+      fileLogger.error(`uri is null: ${JSON.stringify(item)}}`);
+      throw new Error(`uri is null: ${JSON.stringify(item)}}`);
     }
 
     let txResult: CreateIpAssetResponse | undefined;
@@ -136,9 +136,9 @@ export class UploadIPAsset {
       });
     } catch (e) {
       fileLogger.error(
-        `Failed to upload ipAsset ${item.id}:${
+        `Uploading the ipAsset[${item.id}] was failed : ${
           txResult?.txHash
-        }:${JSON.stringify(item)} ${e}`
+        } : ${JSON.stringify(item)} ${e}`
       );
       let uploadFields: IPAssetUpdateFields = {
         status: IP_ASSET_STATUS.FAILED,
@@ -154,8 +154,14 @@ export class UploadIPAsset {
     }
   }
 
+  private async handleIPAssetFailedItem(item: IPAssetItem) {
+    // TODO ：What caused the IP asset's status to be marked as FAILED? 
+    //      Did the transaction fail to send, or was it sent without receiving a response?
+    //      Or did an issue occur while attempting to save to the database?
+  }
+
   private async handleIPAssetSendingItem(item: IPAssetItem) {
-    // TODO
+    // TODO : check the transaction sent or not, if not, send it again. 
   }
 
   private async handleIPAssetSentItem(item: IPAssetItem) {
@@ -163,7 +169,10 @@ export class UploadIPAsset {
       await updateIPAsset(this.prisma, item.id, {
         status: IP_ASSET_STATUS.FINISHED,
       });
+      return;
     }
+    // TODO : Verify whether the transaction has been minted or converted,
+    //      and ensure to populate the asset_seq_id field accordingly.
   }
 
   private async generateUrl(
@@ -176,8 +185,8 @@ export class UploadIPAsset {
       case 3: // character
         return this.generateURIForCharacter(item);
       default:
-        fileLogger.error(`Invalid IP asset type ${item.type}`);
-        throw new Error(`Invalid IP asset type ${item.type}`);
+        fileLogger.error(`The type of the IP asset is not valid : ${item.type}`);
+        throw new Error(`The type of the IP asset is not valid : ${item.type}`);
     }
   }
 
@@ -185,8 +194,8 @@ export class UploadIPAsset {
     item: IPAssetItem
   ): Promise<{ uri: string; hash: string }> {
     if (!item.metadata_raw || item.metadata_raw.trim().length == 0) {
-      fileLogger.error(`meta_data is null: ${JSON.stringify(item)}}`);
-      throw new Error(`meta_data is null: ${JSON.stringify(item)}}`);
+      fileLogger.error(`The meta_data field is absent or not provided : ${JSON.stringify(item)}}`);
+      throw new Error(`The meta_data field is absent or not provided : ${JSON.stringify(item)}}`);
     }
     fileLogger.info(
       `generateURIByMetaData: ${JSON.stringify(item.metadata_raw)}}`
@@ -195,6 +204,8 @@ export class UploadIPAsset {
     const hash = keccak256(toHex(item.metadata_raw));
     fileLogger.info(`uri: ${uri}, hash: ${hash}`);
 
+    // TODO : As a temporary workaround for the SDK issue, use an empty string for the hash. 
+    //      Once the issue is resolved, the actual hash should be utilized.
     await updateIPAsset(this.prisma, item.id, {
       metadata_url: uri,
       // ip_hash: hash,
@@ -209,12 +220,12 @@ export class UploadIPAsset {
   ): Promise<{ uri: string; hash: string }> {
     fileLogger.info(`generateURIForCharacter: ${JSON.stringify(item.id)}}`);
     if (!item.description || item.description.trim().length == 0) {
-      fileLogger.error(`description is null: ${JSON.stringify(item)}}`);
-      throw new Error(`description is null: ${JSON.stringify(item)}}`);
+      fileLogger.error(`The description field is absent or not provided: ${JSON.stringify(item)}}`);
+      throw new Error(`The description field is absent or not provided: ${JSON.stringify(item)}}`);
     }
     if (!item.image_url || item.image_url.trim().length == 0) {
-      fileLogger.error(`image_url is null: ${JSON.stringify(item)}}`);
-      throw new Error(`image_url is null: ${JSON.stringify(item)}}`);
+      fileLogger.error(`The image_url field is absent or not provided: ${JSON.stringify(item)}}`);
+      throw new Error(`The image_url field is absent or not provided: ${JSON.stringify(item)}}`);
     }
     const descriptionURI = await this.uploader.uploadText(item.description);
     fileLogger.info(`descriptionURI: ${descriptionURI}`);
@@ -228,6 +239,8 @@ export class UploadIPAsset {
     const uri = await this.uploader.uploadText(metaData);
     fileLogger.info(`uri: ${uri}, hash: ${hash}`);
 
+    // TODO : As a temporary workaround for the SDK issue, use an empty string for the hash. 
+    //      Once the issue is resolved, the actual hash should be utilized.
     await updateIPAsset(this.prisma, item.id, {
       metadata_raw: metaData,
       metadata_url: imageURI,

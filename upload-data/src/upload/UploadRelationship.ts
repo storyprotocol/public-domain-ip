@@ -38,14 +38,14 @@ export class UploadRelationship {
 
     const relationships = await this.getRelationships(iporg);
     if (relationships.length == 0) {
-      fileLogger.info("No relationship need to upload.");
+      fileLogger.info("There are no relationship requiring upload.");
       return result;
     }
 
     try {
       for (const relationship of relationships) {
         fileLogger.info(
-          `handling relationship: ${JSON.stringify(relationship)}`
+          `Uploading relationship item: ${JSON.stringify(relationship)}`
         );
         switch (relationship.status) {
           case RELATIONSHIP_STATUS.CREATED:
@@ -53,8 +53,8 @@ export class UploadRelationship {
             result.newItem++;
             break;
           case RELATIONSHIP_STATUS.FAILED:
+            await this.handleFailedRelationship(relationship);
             result.failedItem++;
-            // TODO
             break;
           case RELATIONSHIP_STATUS.SENDING:
             await this.handleSendingRelationship(relationship);
@@ -66,7 +66,7 @@ export class UploadRelationship {
             break;
           default:
             fileLogger.warn(
-              `Invalid relationship status ${relationship.status}`
+              `The status of the relationship is not valid: ${relationship.status}`
             );
         }
       }
@@ -88,7 +88,7 @@ export class UploadRelationship {
       RELATIONSHIP_STATUS.FINISHED,
       iporg
     );
-    fileLogger.info(`Fund ${relationships.length} relationship(s).`);
+    fileLogger.info(`Found ${relationships.length} relationship(s).`);
     return relationships;
   }
 
@@ -96,18 +96,18 @@ export class UploadRelationship {
     const registryAddress = process.env.NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT;
     if (!registryAddress) {
       throw new Error(
-        `NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT is not set: ${JSON.stringify(
+        `The environment variable NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT has not been configured: ${JSON.stringify(
           item
         )}}`
       );
     }
     if (!item.org_address) {
-      throw new Error(`org_address is null: ${JSON.stringify(item)}}`);
+      throw new Error(`The org_address field is absent or not provided: ${JSON.stringify(item)}}`);
     }
 
     if (!item.src_asset_seq_id || !item.dst_asset_seq_id) {
       throw new Error(
-        `src_asset_seq_id or dst_asset_seq_id is null: ${JSON.stringify(item)}}`
+        `The src_asset_seq_id or dst_asset_seq_id field is absent or not provided: ${JSON.stringify(item)}}`
       );
     }
     let txResult: RegisterRelationshipResponse | undefined;
@@ -133,7 +133,7 @@ export class UploadRelationship {
       });
     } catch (e) {
       fileLogger.error(
-        `Failed to upload relationship ${item.id}:${
+        `Uploading relationship[${item.id}] was failed : ${
           txResult?.txHash
         }:${JSON.stringify(item)} ${e}`
       );
@@ -150,6 +150,10 @@ export class UploadRelationship {
     }
   }
 
+  private async handleFailedRelationship(item: RelationshipItem) {
+    // TODO: handle failed relationship
+  }
+
   private async handleSendingRelationship(item: RelationshipItem) {
     // TODO: handle sending relationship
   }
@@ -159,6 +163,8 @@ export class UploadRelationship {
       await updateRelationship(this.prisma, item.id, {
         status: RELATIONSHIP_STATUS.FINISHED,
       });
+      return;
     }
+    // TODO
   }
 }

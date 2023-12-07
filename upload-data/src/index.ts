@@ -47,13 +47,13 @@ async function uploadByIPORG(
   uploadRelationship: UploadRelationship
 ) {
   if (!process.env.IP_ORGS) {
-    fileLogger.error("IP_ORGS is not set");
-    throw new Error("IP_ORGS is not set");
+    fileLogger.error("The environment variable IP_ORGS has not been configured.");
+    throw new Error("The environment variable IP_ORGS has not been configured.");
   }
   const iporgs = process.env.IP_ORGS.split(",");
-  fileLogger.info(`iporgs (${iporgs.length}) : ${JSON.stringify(iporgs)}`);
+  fileLogger.info(`Found ${iporgs.length} iporg(s) : ${JSON.stringify(iporgs)}`);
   for (const iporg of iporgs) {
-    fileLogger.info(`Start handling iporg: ${iporg}`);
+    fileLogger.info(`Begin processing the iporg item: ${iporg}`);
 
     // handle ip_org
     const uploadIPOrgResult = await uploadIPOrg.upload(iporg);
@@ -81,18 +81,18 @@ async function uploadByIPORG(
       `uploadRelationshipResult: ${JSON.stringify(uploadRelationshipResult)}`
     );
 
-    fileLogger.info(`Finish handling iporg: ${iporg}`);
+    fileLogger.info('Complete the processing of iporg item');
   }
 }
 
 async function main() {
   if (!process.env.PRIVATE_KEY) {
-    fileLogger.error("PRIVATE_KEY is not set");
-    throw new Error("PRIVATE_KEY is not set");
+    fileLogger.error("The environment variable PRIVATE_KEY has not been configured.");
+    throw new Error("The environment variable PRIVATE_KEY has not been configured.");
   }
   if (!process.env.NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT) {
-    fileLogger.error("NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT is not set");
-    throw new Error("NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT is not set");
+    fileLogger.error("The environment variable NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT has not been configured.");
+    throw new Error("The environment variable NEXT_PUBLIC_IP_ASSET_REGISTRY_CONTRACT has not been configured.");
   }
 
   const clientKitOptions: ClientKitOptions = {
@@ -138,7 +138,7 @@ async function main() {
 main()
   .then(
     () => {
-      fileLogger.info("Finished");
+      fileLogger.info("Upload done.");
       process.exit(0);
     },
     (err) => {

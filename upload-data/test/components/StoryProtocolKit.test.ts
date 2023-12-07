@@ -82,7 +82,7 @@ describe("StoryProtocolKit", () => {
 
     expect(() =>
       StoryProtocolKit.createIPOrgRelationType(client, orgRelationType)
-    ).toThrow("ipOrg is null");
+    ).toThrow("The ipOrg field is absent or not provided.");
   });
 
   it("createIPAsset", () => {

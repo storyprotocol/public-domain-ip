@@ -46,8 +46,8 @@ export class StoryProtocolKit {
     item: RegisterIPOrgRelationTypeParams
   ): Promise<RegisterRelationshipTypeResponse> {
     if (!item.ipOrg) {
-      fileLogger.error(`ipOrg is null: ${JSON.stringify(item)}}`);
-      throw new Error("ipOrg is null");
+      fileLogger.error(`The ipOrg field is absent or not provided: ${JSON.stringify(item)}}`);
+      throw new Error("The ipOrg field is absent or not provided.");
     }
     const params: RegisterRelationshipTypeRequest = {
       ipOrgId: item.ipOrg,
@@ -71,8 +71,6 @@ export class StoryProtocolKit {
     client: Client,
     item: RegisterIPAssetParams
   ): Promise<CreateIpAssetResponse> {
-    // const preHooksData: string[] = [];
-    // const postHooksData: string[] = [];
     const params: CreateIpAssetRequest = {
       name: item.name,
       typeIndex: item.ipAssetType,
@@ -91,8 +89,6 @@ export class StoryProtocolKit {
     client: Client,
     item: RelationshipParams
   ): Promise<RegisterRelationshipResponse> {
-    // const preHooksData: string[] = [];
-    // const postHooksData: string[] = [];
     const params: RegisterRelationshipRequest = {
       ipOrgId: item.orgAddress,
       relType: item.relType,
