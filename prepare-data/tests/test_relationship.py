@@ -88,14 +88,14 @@ class TestRelationship(unittest.TestCase):
         self.assertEqual(types[0].relationship_type, "APPEARS_IN")
         self.assertEqual(types[0].related_src, 1)
         self.assertEqual(types[0].related_dst, 1)
-        self.assertEqual(types[0].allowed_srcs, json.dumps(["1"]))
-        self.assertEqual(types[0].allowed_dsts, json.dumps(["1"]))
+        self.assertEqual(types[0].allowed_srcs, json.dumps([1]))
+        self.assertEqual(types[0].allowed_dsts, json.dumps([1]))
 
         self.assertEqual(types[1].relationship_type, "GROUP_BY_BOOK")
         self.assertEqual(types[1].related_src, 1)
         self.assertEqual(types[1].related_dst, 1)
-        self.assertEqual(types[1].allowed_srcs, json.dumps(["1"]))
-        self.assertEqual(types[1].allowed_dsts, json.dumps(["1"]))
+        self.assertEqual(types[1].allowed_srcs, json.dumps([1]))
+        self.assertEqual(types[1].allowed_dsts, json.dumps([1]))
 
         handler.handle_chapter_book_relationships()
         handler.handle_character_book_relationships()

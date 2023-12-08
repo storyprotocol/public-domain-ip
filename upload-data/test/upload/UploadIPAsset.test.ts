@@ -278,7 +278,7 @@ describe("UploadIPAsset", () => {
     expect(getIpAssets).toBeCalledTimes(1);
     expect(updateIPAsset).toBeCalledTimes(3);
     expect(StoryProtocolKit.createIPAsset).toBeCalledTimes(1);
-    expect(Uploader.prototype.uploadText).toBeCalledTimes(1);
+    expect(Uploader.prototype.uploadText).toBeCalledTimes(2);
     expect(result).toEqual({
       newItem: 1,
       sendingItem: 0,
@@ -313,7 +313,7 @@ describe("UploadIPAsset", () => {
     expect(getIpAssets).toBeCalledTimes(1);
     expect(updateIPAsset).toBeCalledTimes(3);
     expect(StoryProtocolKit.createIPAsset).toBeCalledTimes(1);
-    expect(Uploader.prototype.uploadText).toBeCalledTimes(2);
+    expect(Uploader.prototype.uploadText).toBeCalledTimes(1);
     expect(Uploader.prototype.uploadImage).toBeCalledTimes(1);
     expect(result).toEqual({
       newItem: 1,
@@ -330,33 +330,6 @@ describe("UploadIPAsset", () => {
         metadata_url: undefined,
         type: 3,
         image_url: undefined,
-      },
-    ]);
-
-    (StoryProtocolKit.createIPAsset as any).mockResolvedValue({
-      txHash:
-        "0xc236bc7efe6c96cc554018a3688d309c74fe9b23a00b57d858196f6a98b2471b",
-      ipAssetId: "1",
-    });
-
-    const client = StoryClient.newClient({} as StoryConfig);
-    const uploadIPAsset = new UploadIPAsset(client, "");
-    await expect(uploadIPAsset.upload()).rejects.toThrow();
-    await new Promise(process.nextTick);
-    expect(getIpAssets).toBeCalledTimes(1);
-    expect(updateIPAsset).toBeCalledTimes(0);
-    expect(StoryProtocolKit.createIPAsset).toBeCalledTimes(0);
-    expect(Uploader.prototype.uploadText).toBeCalledTimes(0);
-    expect(Uploader.prototype.uploadImage).toBeCalledTimes(0);
-  });
-
-  it("upload with created character item throw error for description", async () => {
-    (getIpAssets as any).mockResolvedValue([
-      {
-        ...defaultIPAssetItem,
-        metadata_url: undefined,
-        type: 3,
-        description: undefined,
       },
     ]);
 

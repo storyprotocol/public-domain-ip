@@ -27,17 +27,45 @@ class AssetHandler:
         # logger.info(f"process the book {book}")
         metadata_raw = json.dumps(
             {
-                "auther": json.loads(book.authors),
+                "name": book.title,
+                "description": book.tags,
+                "external_url": book.source_url,
+                "image": "",
+                "attributes": [],
+                "author": json.loads(book.authors),
                 "publish_date": book.issued_date,
-                "total_chapters": book.total_chapters,
-                "source_url": book.source_url,
-                "tags": json.loads(book.tags),
+                "mimeType": "application/json",
+                "media_url": "",
             }
         )
         return metadata_raw
 
     def __get_chapter_meta_data(self, chapter):
-        metadata_raw = json.dumps({"chapter_number": chapter.chapter_num})
+        metadata_raw = json.dumps(
+            {
+                "name": chapter.chapter_name,
+                "description": f"Chapter Number {chapter.chapter_num}",
+                "external_url": "",
+                "image": "",
+                "attributes": [],
+                "mimeType": "application/json",
+                "media_url": "",
+            }
+        )
+        return metadata_raw
+    
+    def __get_character_meta_data(self, character):
+        metadata_raw = json.dumps(
+            {
+                "name": character.name,
+                "description": character.description,
+                "external_url": "",
+                "image": "",
+                "attributes": [],
+                "mimeType": "application/json",
+                "media_url": "",
+            }
+        )
         return metadata_raw
 
     def __create_ip_asset(
@@ -113,7 +141,7 @@ class AssetHandler:
             # logger.info(f"-- IP -- CHAPTER - {chapter.chapter_name}")
             metadata_raw = self.__get_chapter_meta_data(chapter)
             chapter_ip_asset = self.__create_ip_asset(
-                chapter.chapter_name, Asset_Type.CHAPTER.value, metadata_raw
+                chapter.chapter_name, Asset_Type.CHAPTER.value, metadata_raw, chapter.content
             )
             self.__chapter_dict[chapter.id].append(chapter_ip_asset)
             self.__book_chapter_dict[chapter.book_id].append(chapter_ip_asset)
@@ -123,10 +151,11 @@ class AssetHandler:
             if series_entity_obj.image_url is None:
                 logger.info(f"The character {series_entity_obj.name} in {series_obj.title} does not have image_url, skip it ")
                 continue
+            metadata_raw = self.__get_character_meta_data(series_entity_obj)
             character_ip_asset = self.__create_ip_asset(
                 series_entity_obj.name,
                 Asset_Type.CHARACTER.value,
-                None,
+                metadata_raw,
                 series_entity_obj.description,
                 series_entity_obj.image_url,
             )
@@ -138,6 +167,3 @@ class AssetHandler:
             else:
                 for book_id in self.__book_dict.keys():
                     self.__character_dict[book_id].append(character_ip_asset)
-            # logger.info(
-            #     f"?? character id - {character_ip_asset.id} - ip org {self.ip_org.id}"
-            # )

@@ -1,0 +1,11 @@
+title,author,url,type,params,series,nlp_option
+Alice's Adventures in Wonderland,Lewis Carroll,https://www.gutenberg.org/cache/epub/11/pg11-images.html,1,false,
+The Wizard of Oz,L. Frank Baum,https://www.gutenberg.org/cache/epub/55/pg55-images.html,1,false,
+A Christmas Carol,Charles Dickens,https://www.gutenberg.org/cache/epub/46/pg46-images.html,2,link{1-5},
+Peter Pan,J.M. Barrie,https://www.gutenberg.org/cache/epub/16/pg16-images.html,1,false,
+The Jungle Book,Rudyard Kipling,https://www.gutenberg.org/cache/epub/236/pg236-images.html,1,false,
+Dracula,Bram Stoker,https://www.gutenberg.org/cache/epub/345/pg345-images.html,1,false,
+The Age of Innocence,Edith Wharton,https://www.gutenberg.org/cache/epub/541/pg541-images.html,2,"chap{01-34},note",
+The Adventures of Huckleberry Finn,Mark Twain,https://www.gutenberg.org/cache/epub/76/pg76-images.html,1,false,
+Frankenstein,Mary Shelley,https://www.gutenberg.org/cache/epub/84/pg84-images.html,1,false,
+Pride and Prejudice,Jane Austen,https://www.gutenberg.org/cache/epub/1342/pg1342-images.html,2,"PREFACE,Chapter_I,CHAPTER_{2-61}",

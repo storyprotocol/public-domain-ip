@@ -51,7 +51,7 @@ class TestAssetHandler(unittest.TestCase):
         self.assertEqual(handler.get_ip_org().symbol, "TOT")
         self.assertEqual(
             handler.get_ip_org().ip_asset_types,
-            json.dumps(["1", "2", "3", "4", "5", "6"]),
+            json.dumps(["Story", "Book", "Chapter", "Character", "Item", "Art"]),
         )
 
         series_books = [
@@ -123,14 +123,14 @@ class TestAssetHandler(unittest.TestCase):
         self.assertEqual(len(ip_assets_1001), 1)
         self.assertEqual(ip_assets_1001[0].name, "chapter1")
         self.assertEqual(ip_assets_1001[0].type, 2)
-        self.assertEqual(ip_assets_1001[0].description, None)
+        self.assertEqual(ip_assets_1001[0].description, "chapter1 content")
         self.assertEqual(ip_assets_1001[0].image_url, None)
 
         ip_assets_1001_1002 = handler.get_chapter_ip_assets_by_book(101)
         self.assertEqual(len(ip_assets_1001_1002), 2)
         self.assertEqual(ip_assets_1001_1002[0].name, "chapter1")
         self.assertEqual(ip_assets_1001_1002[0].type, 2)
-        self.assertEqual(ip_assets_1001_1002[0].description, None)
+        self.assertEqual(ip_assets_1001_1002[0].description, "chapter1 content")
         self.assertEqual(ip_assets_1001_1002[0].image_url, None)
 
         ip_assets = handler.get_ip_assets()
