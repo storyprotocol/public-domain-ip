@@ -29,6 +29,13 @@ Download the model for NER
 python -m spacy download en_core_web_trf
 ```
 
+Config the Database URL. 
+If this argument is not configured, the tool will use the sqlite db in `test-data/local.db`
+Please install related db drivers. For postgresql, we can install `pip install psycopg2-binary`
+```shell
+export DATABASE_URL=
+```
+
 Config the ChatGPT key for description and image generation.
 
 ```shell
@@ -76,6 +83,13 @@ The dall-e-3 may reject some request. Please adjust the descrition and retry.
 This tool will map the book and characters to ip org and ip assets. It will also build the relationship between ip assets
 ```shell
 python app.py map-ip
+```
+
+## Skip above processing step and import test data
+This tool will load the test data from csv file into the tables. The raw data path is required.
+Prease refer `test-data` folder for more information
+```shell
+python app.py load-db-data -f ../test-data/raw/
 ```
 
 ## Go to upload script

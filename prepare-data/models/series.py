@@ -1,7 +1,7 @@
 import uuid
 from enum import Enum
 
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Text
 
 from character_extractor.constants import IMAGE_ROOT_FOLDER
 from models import Base, Session
@@ -13,7 +13,7 @@ class Series(Base):
 
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String(256))
-    description = Column(String(512))
+    description = Column(Text)
 
     @classmethod
     def first_by_title(cls, series_title):
@@ -79,7 +79,7 @@ class SeriesEntity(Base):
     chapter_id = Column(String(36), nullable=True)
     type = Column(String(64))
     name = Column(String(256))
-    description = Column(String(512))
+    description = Column(Text)
     image_url = Column(String(512))
 
     def image_file_name(self):

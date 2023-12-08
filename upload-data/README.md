@@ -1,8 +1,9 @@
 # Data Upload
 
 This step will read the ip data from database and upload to story protocol. Please refer `prepare-data` folder for more details of data.
-## Set up environment
 
+## Set up environment
+Create .env file to include following environment setting
 ### Database URL
 `DATABASE_URL =`
 
@@ -32,19 +33,21 @@ Set the specified ip org id to be upload.
 `IP_ORGS =`
 If this value is not setting, All the ip orgs in database will upload to the protocol
 
-# Install packages
+## Install packages
 
 run `yarn install`
 
-# Generate prisma Model
+## Generate prisma Model
+Please update the `prisma/schema.prisma` if you use external database than sqlite db.
+Update `provider = "sqlite"` to match your database drive (e.g. provider = "postgresql").
 
 run `npx prisma generate`
 
-# Run tests
+## Run tests
 
 run `./node_modules/.bin/jest --roots test`
 
-# Upload data
+## Upload data
 
 run `npm run build`
 
