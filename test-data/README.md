@@ -37,34 +37,34 @@ Please make sure the file name match with image_url in series_entity table if yo
 
 ## Book list
 - book-name: The Wonderful Wizard of Oz
-  - ip-org-id: 74bdfee8-5a57-499c-aad4-614ddde0d9f3
+  - ip-org-id: 255df7f9-4ccf-4cee-9a47-970a91574325
 
 - book-name: A Christmas Carol in Prose; Being a Ghost Story of Christmas
-  - ip-org-id: e77483ff-3510-48fb-b4eb-9312aba6d65b
+  - ip-org-id: 9cc8738d-74e5-49e7-aee7-e850db3f78ab
 
 - book-name: Peter Pan
-  - ip-org-id: 3828f1ca-629f-4fdc-8868-76c526fad813
+  - ip-org-id: fc1a1781-949d-4acc-87ba-d290ab8ad024
 
 - book-name: The Jungle Book
-  - ip-org-id: e937fcef-5a5a-45ae-8d03-cbeb67ef10c5
+  - ip-org-id: 135185f3-f684-4001-bbc1-d9bd637ad0eb
 
 - book-name: Dracula
-  - ip-org-id: 4c557f8f-ba6c-4e9d-8845-2a99b1f831c0
+  - ip-org-id: 2781f765-d654-4eff-b866-0a084454abfb
 
 - book-name: The Age of Innocence
-  - ip-org-id: 96655d9a-7f19-4398-8c6b-5f023416cada
+  - ip-org-id: f753bac2-3138-464c-aae6-677f04d6c1aa
 
 - book-name: Adventures of Huckleberry Finn
-  - ip-org-id: b84c4cf3-1a61-4a44-ab2b-83f7c2dba762
+  - ip-org-id: aa9086f5-41a4-4c48-b6df-0b081c307c4c
 
 - book-name: Alice's Adventures in Wonderland
-  - ip-org-id: 26d9497d-1798-45d2-9fdd-691d9cb08656
+  - ip-org-id: cf7a2b89-9ce9-443b-bb99-d156218614d5
 
 - book-name: Frankenstein; Or, The Modern Prometheus
-  - ip-org-id: 337e08be-0c67-47dc-8f92-85615468864f
+  - ip-org-id: e4135903-935b-4f20-9ba7-e1b57601eaa2
 
 - book-name: Pride and Prejudice
-  - ip-org-id: b19bf42d-e908-4ccd-91e6-0d2904f40e15
+  - ip-org-id: 08756108-4af5-45f9-b3f1-3eba0b7563f4
 
 We get all the chapters and 10 characters with description from each book and mapped them to ip organizations and assets. 
 In the test data we includes only 2 relationship type:  
@@ -99,5 +99,5 @@ NEXT_PUBLIC_MODULE_REGISTRY_CONTRACT = 0x8209442D02FB517Bdb9099E8Ade3968762F8545
 RPC_URL=https://1rpc.io/sepolia
 PRIVATE_KEY=0x1234
 IMAGE_PATH=path/to/repo/public-domain-ip/test-data/images/
-IP_ORGS=74bdfee8-5a57-499c-aad4-614ddde0d9f3,e77483ff-3510-48fb-b4eb-9312aba6d65b	
+IP_ORGS=255df7f9-4ccf-4cee-9a47-970a91574325,9cc8738d-74e5-49e7-aee7-e850db3f78ab	
 ```

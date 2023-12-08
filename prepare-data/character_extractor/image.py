@@ -32,6 +32,7 @@ async def openai_generate_image(character: SeriesEntity, image_url):
     image_data.seek(0)
     image = Image.open(image_data)
     image = image.convert("RGB")
+    image = image.resize((512, 512))
     image_path = f"{IMAGE_ROOT_FOLDER}/{image_url}"
     image.save(image_path, quality=95)
     SeriesEntity.update_url(character.id, image_url)
