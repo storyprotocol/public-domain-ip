@@ -190,8 +190,9 @@ export class UploadIPAsset {
   ): Promise<{ uri: string; hash: string }> {
     switch (item.type) {
       case 1: // book
-      case 2: // chapter
         return this.generateURIByMetaData(item);
+      case 2: // chapter
+        return this.generateURIForChapter(item);
       case 3: // character
         return this.generateURIForCharacter(item);
       default:
@@ -235,10 +236,10 @@ export class UploadIPAsset {
     return { uri, hash: "" };
   }
 
-  private async generateURIForCharacter(
+  private async generateURIForChapter(
     item: IPAssetItem
   ): Promise<{ uri: string; hash: string }> {
-    fileLogger.info(`generateURIForCharacter: ${JSON.stringify(item.id)}}`);
+    fileLogger.info(`generateURIForChapter: ${JSON.stringify(item.id)}}`);
     if (!item.description || item.description.trim().length == 0) {
       fileLogger.error(
         `The description field is absent or not provided: ${JSON.stringify(
@@ -251,6 +252,37 @@ export class UploadIPAsset {
         )}}`
       );
     }
+
+    const metaData = JSON.parse(item.metadata_raw || "{}");
+    if (!metaData.media_url || metaData.media_url.trim().length == 0) {
+      const chapterContent = JSON.stringify({
+        data: item.description,
+      });
+      const chapterContentURI = await this.uploader.uploadText(chapterContent);
+      fileLogger.info(`Chapter content URI: ${chapterContentURI}`);
+      metaData.media_url = chapterContentURI;
+    }
+    const metaDataStr = JSON.stringify(metaData);
+    const mediaURI = await this.uploader.uploadText(metaDataStr);
+    const hash = keccak256(toHex(metaDataStr));
+    fileLogger.info(`Chapter's mediaURI: ${mediaURI}, hash: ${hash}`);
+
+    // TODO : As a temporary workaround for the SDK issue, use an empty string for the hash.
+    //      Once the issue is resolved, the actual hash should be utilized.
+    await updateIPAsset(this.prisma, item.id, {
+      metadata_raw: metaDataStr,
+      metadata_url: mediaURI,
+      // ip_hash: hash,
+    });
+
+    // return { uri, hash };
+    return { uri: mediaURI, hash: "" };
+  }
+
+  private async generateURIForCharacter(
+    item: IPAssetItem
+  ): Promise<{ uri: string; hash: string }> {
+    fileLogger.info(`generateURIForCharacter: ${JSON.stringify(item.id)}}`);
     if (!item.image_url || item.image_url.trim().length == 0) {
       fileLogger.error(
         `The image_url field is absent or not provided: ${JSON.stringify(
@@ -263,27 +295,28 @@ export class UploadIPAsset {
         )}}`
       );
     }
-    const descriptionURI = await this.uploader.uploadText(item.description);
-    fileLogger.info(`descriptionURI: ${descriptionURI}`);
-    const imageURI = await this.uploader.uploadImage(item.image_url);
-    fileLogger.info(`imageURI: ${imageURI}`);
-    const metaData = JSON.stringify({
-      descriptionURI,
-      imageURI,
-    });
+
+    const metaData = JSON.parse(item.metadata_raw || "{}");
+    if (!metaData.image || metaData.image.trim().length == 0) {
+      const imageURI = await this.uploader.uploadImage(item.image_url);
+      fileLogger.info(`Character's imageURI: ${imageURI}`);
+      metaData.image = imageURI;
+    }
+
+    const metaDataStr = JSON.stringify(metaData);
+    const mediaURI = await this.uploader.uploadText(metaDataStr);
     const hash = keccak256(toHex(metaData));
-    const uri = await this.uploader.uploadText(metaData);
-    fileLogger.info(`uri: ${uri}, hash: ${hash}`);
+    fileLogger.info(`Character's mediaURI: ${mediaURI}, hash: ${hash}`);
 
     // TODO : As a temporary workaround for the SDK issue, use an empty string for the hash.
     //      Once the issue is resolved, the actual hash should be utilized.
     await updateIPAsset(this.prisma, item.id, {
-      metadata_raw: metaData,
-      metadata_url: imageURI,
+      metadata_raw: metaDataStr,
+      metadata_url: mediaURI,
       // ip_hash: hash,
     });
 
     // return { uri, hash };
-    return { uri, hash: "" };
+    return { uri: mediaURI, hash: "" };
   }
 }

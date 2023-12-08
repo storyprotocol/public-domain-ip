@@ -33,6 +33,7 @@ describe("Uploader", () => {
   });
 
   it("uploadImage", async () => {
+    process.env.IMAGE_PATH = ".";
     (StoryClient.newClient as any).mockImplementation(() => {
       return {
         platform: {
@@ -43,7 +44,7 @@ describe("Uploader", () => {
 
     const client = StoryClient.newClient({} as StoryConfig);
     const uploader = new Uploader(client);
-    const result = await uploader.uploadImage("upload-data/package.json");
+    const result = await uploader.uploadImage("/package.json");
     expect(result).toEqual("www.google.com");
   });
 });
