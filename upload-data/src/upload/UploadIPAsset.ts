@@ -222,7 +222,7 @@ export class UploadIPAsset {
       `generateURIByMetaData: ${JSON.stringify(item.metadata_raw)}}`
     );
     const uri = await this.uploader.uploadText(item.metadata_raw);
-    const hash = keccak256(toHex(item.metadata_raw));
+    const hash = keccak256(toHex(item.metadata_raw)).substring(2);
     fileLogger.info(`uri: ${uri}, hash: ${hash}`);
 
     // TODO : As a temporary workaround for the SDK issue, use an empty string for the hash.
@@ -232,8 +232,7 @@ export class UploadIPAsset {
       // ip_hash: hash,
     });
 
-    // return { uri, hash };
-    return { uri, hash: "" };
+    return { uri, hash };
   }
 
   private async generateURIForChapter(
@@ -264,7 +263,7 @@ export class UploadIPAsset {
     }
     const metaDataStr = JSON.stringify(metaData);
     const mediaURI = await this.uploader.uploadText(metaDataStr);
-    const hash = keccak256(toHex(metaDataStr));
+    const hash = keccak256(toHex(metaDataStr)).substring(2);
     fileLogger.info(`Chapter's mediaURI: ${mediaURI}, hash: ${hash}`);
 
     // TODO : As a temporary workaround for the SDK issue, use an empty string for the hash.
@@ -275,8 +274,7 @@ export class UploadIPAsset {
       // ip_hash: hash,
     });
 
-    // return { uri, hash };
-    return { uri: mediaURI, hash: "" };
+    return { uri: mediaURI, hash };
   }
 
   private async generateURIForCharacter(
@@ -305,7 +303,7 @@ export class UploadIPAsset {
 
     const metaDataStr = JSON.stringify(metaData);
     const mediaURI = await this.uploader.uploadText(metaDataStr);
-    const hash = keccak256(toHex(metaData));
+    const hash = keccak256(toHex(metaData)).substring(2);
     fileLogger.info(`Character's mediaURI: ${mediaURI}, hash: ${hash}`);
 
     // TODO : As a temporary workaround for the SDK issue, use an empty string for the hash.
@@ -316,7 +314,6 @@ export class UploadIPAsset {
       // ip_hash: hash,
     });
 
-    // return { uri, hash };
-    return { uri: mediaURI, hash: "" };
+    return { uri: mediaURI, hash };
   }
 }
