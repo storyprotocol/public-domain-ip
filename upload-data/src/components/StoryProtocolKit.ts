@@ -77,7 +77,7 @@ export class StoryProtocolKit {
       ipOrgId: item.orgAddress,
       owner: item.owner,
       mediaUrl: item.mediaUrl,
-      contentHash: item.hash,
+      contentHash: `0x${item.hash}`,
       txOptions: {
         waitForTransaction: true,
       },
