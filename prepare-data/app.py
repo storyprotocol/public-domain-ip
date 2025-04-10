@@ -33,8 +33,9 @@ def process_entity():
 
 
 @main.command()
-def collect_desc():
-    asyncio.run(collection_description())
+@click.option("--mira", is_flag=True, help="Use Mira API instead of OpenAI")
+def collect_desc(mira):
+    asyncio.run(collection_description(use_mira=mira))
 
 
 @main.command()
